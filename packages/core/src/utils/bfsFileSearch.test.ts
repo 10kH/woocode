@@ -130,7 +130,7 @@ describe('bfsFileSearch', () => {
         fileService,
         fileFilteringOptions: {
           respectGitIgnore: true,
-          respectGeminiIgnore: true,
+          respectWoocodeIgnore: true,
         },
       });
 
@@ -138,7 +138,7 @@ describe('bfsFileSearch', () => {
     });
 
     it('should ignore geminiignored files', async () => {
-      await createTestFile('node_modules/', 'project', '.geminiignore');
+      await createTestFile('node_modules/', 'project', '.woocodeignore');
       await createTestFile('content', 'project', 'node_modules', 'target.txt');
       const targetFilePath = await createTestFile(
         'content',
@@ -153,7 +153,7 @@ describe('bfsFileSearch', () => {
         fileService,
         fileFilteringOptions: {
           respectGitIgnore: false,
-          respectGeminiIgnore: true,
+          respectWoocodeIgnore: true,
         },
       });
 
@@ -182,7 +182,7 @@ describe('bfsFileSearch', () => {
         fileService,
         fileFilteringOptions: {
           respectGitIgnore: false,
-          respectGeminiIgnore: false,
+          respectWoocodeIgnore: false,
         },
       });
 
@@ -210,16 +210,16 @@ describe('bfsFileSearch', () => {
     for (let i = 0; i < numTargetDirs; i++) {
       // Add target files in some directories
       fileCreationPromises.push(
-        createTestFile('content', `dir${i}`, 'GEMINI.md'),
+        createTestFile('content', `dir${i}`, 'WOOCODE.md'),
       );
       fileCreationPromises.push(
-        createTestFile('content', `dir${i}`, 'subdir1', 'GEMINI.md'),
+        createTestFile('content', `dir${i}`, 'subdir1', 'WOOCODE.md'),
       );
     }
     const expectedFiles = await Promise.all(fileCreationPromises);
 
     const result = await bfsFileSearch(testRootDir, {
-      fileName: 'GEMINI.md',
+      fileName: 'WOOCODE.md',
       // Provide a generous maxDirs limit to ensure it doesn't prematurely stop
       // in this large test case. Total dirs created is 200.
       maxDirs: 250,

@@ -14,7 +14,7 @@ import type { FileDiscoveryService } from '../services/fileDiscoveryService.js';
 import { processImports } from './memoryImportProcessor.js';
 import type { FileFilteringOptions } from '../config/config.js';
 import { DEFAULT_MEMORY_FILE_FILTERING_OPTIONS } from '../config/config.js';
-import { GEMINI_DIR } from './paths.js';
+import { WOOCODE_DIR } from './paths.js';
 
 // Simple console logger, similar to the one previously in CLI's config.ts
 // TODO: Integrate with a more robust server-side logger if available/appropriate.
@@ -149,7 +149,7 @@ async function getGeminiMdFilePathsInternalForEachDir(
     const resolvedHome = path.resolve(userHomePath);
     const globalMemoryPath = path.join(
       resolvedHome,
-      GEMINI_DIR,
+      WOOCODE_DIR,
       geminiMdFilename,
     );
 
@@ -185,7 +185,7 @@ async function getGeminiMdFilePathsInternalForEachDir(
         : path.dirname(resolvedHome);
 
       while (currentDir && currentDir !== path.dirname(currentDir)) {
-        if (currentDir === path.join(resolvedHome, GEMINI_DIR)) {
+        if (currentDir === path.join(resolvedHome, WOOCODE_DIR)) {
           break;
         }
 
@@ -334,7 +334,7 @@ export interface LoadServerHierarchicalMemoryResponse {
 }
 
 /**
- * Loads hierarchical GEMINI.md files and concatenates their content.
+ * Loads hierarchical WOOCODE.md files and concatenates their content.
  * This function is intended for use by the server.
  */
 export async function loadServerHierarchicalMemory(
@@ -369,7 +369,7 @@ export async function loadServerHierarchicalMemory(
   );
   if (filePaths.length === 0) {
     if (debugMode)
-      logger.debug('No GEMINI.md files found in hierarchy of the workspace.');
+      logger.debug('No WOOCODE.md files found in hierarchy of the workspace.');
     return { memoryContent: '', fileCount: 0 };
   }
   const contentsWithPaths = await readGeminiMdFiles(

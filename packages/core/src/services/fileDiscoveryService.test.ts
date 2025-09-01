@@ -53,12 +53,12 @@ describe('FileDiscoveryService', () => {
       expect(service.shouldGitIgnoreFile('node_modules/foo.js')).toBe(false);
     });
 
-    it('should load .geminiignore patterns even when not in a git repo', async () => {
-      await createTestFile('.geminiignore', 'secrets.txt');
+    it('should load .woocodeignore patterns even when not in a git repo', async () => {
+      await createTestFile('.woocodeignore', 'secrets.txt');
       const service = new FileDiscoveryService(projectRoot);
 
-      expect(service.shouldGeminiIgnoreFile('secrets.txt')).toBe(true);
-      expect(service.shouldGeminiIgnoreFile('src/index.js')).toBe(false);
+      expect(service.shouldWoocodeIgnoreFile('secrets.txt')).toBe(true);
+      expect(service.shouldWoocodeIgnoreFile('src/index.js')).toBe(false);
     });
   });
 
@@ -66,7 +66,7 @@ describe('FileDiscoveryService', () => {
     beforeEach(async () => {
       await fs.mkdir(path.join(projectRoot, '.git'));
       await createTestFile('.gitignore', 'node_modules/\n.git/\ndist');
-      await createTestFile('.geminiignore', 'logs/');
+      await createTestFile('.woocodeignore', 'logs/');
     });
 
     it('should filter out git-ignored and gemini-ignored files by default', () => {
@@ -98,7 +98,7 @@ describe('FileDiscoveryService', () => {
 
       const filtered = service.filterFiles(files, {
         respectGitIgnore: false,
-        respectGeminiIgnore: true, // still respect this one
+        respectWoocodeIgnore: true, // still respect this one
       });
 
       expect(filtered).toEqual(
@@ -108,7 +108,7 @@ describe('FileDiscoveryService', () => {
       );
     });
 
-    it('should not filter files when respectGeminiIgnore is false', () => {
+    it('should not filter files when respectWoocodeIgnore is false', () => {
       const files = [
         'src/index.ts',
         'node_modules/package/index.js',
@@ -119,7 +119,7 @@ describe('FileDiscoveryService', () => {
 
       const filtered = service.filterFiles(files, {
         respectGitIgnore: true,
-        respectGeminiIgnore: false,
+        respectWoocodeIgnore: false,
       });
 
       expect(filtered).toEqual(
@@ -136,11 +136,11 @@ describe('FileDiscoveryService', () => {
     });
   });
 
-  describe('shouldGitIgnoreFile & shouldGeminiIgnoreFile', () => {
+  describe('shouldGitIgnoreFile & shouldWoocodeIgnoreFile', () => {
     beforeEach(async () => {
       await fs.mkdir(path.join(projectRoot, '.git'));
       await createTestFile('.gitignore', 'node_modules/');
-      await createTestFile('.geminiignore', '*.log');
+      await createTestFile('.woocodeignore', '*.log');
     });
 
     it('should return true for git-ignored files', () => {
@@ -165,7 +165,7 @@ describe('FileDiscoveryService', () => {
       const service = new FileDiscoveryService(projectRoot);
 
       expect(
-        service.shouldGeminiIgnoreFile(path.join(projectRoot, 'debug.log')),
+        service.shouldWoocodeIgnoreFile(path.join(projectRoot, 'debug.log')),
       ).toBe(true);
     });
 
@@ -173,7 +173,7 @@ describe('FileDiscoveryService', () => {
       const service = new FileDiscoveryService(projectRoot);
 
       expect(
-        service.shouldGeminiIgnoreFile(path.join(projectRoot, 'src/index.ts')),
+        service.shouldWoocodeIgnoreFile(path.join(projectRoot, 'src/index.ts')),
       ).toBe(false);
     });
   });

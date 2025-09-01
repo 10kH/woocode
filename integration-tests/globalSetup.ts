@@ -22,7 +22,7 @@ import { fileURLToPath } from 'node:url';
 import * as os from 'node:os';
 
 import {
-  GEMINI_CONFIG_DIR,
+  WOOCODE_CONFIG_DIR,
   DEFAULT_CONTEXT_FILENAME,
 } from '../packages/core/src/tools/memoryTool.js';
 
@@ -33,7 +33,7 @@ let runDir = ''; // Make runDir accessible in teardown
 
 const memoryFilePath = join(
   os.homedir(),
-  GEMINI_CONFIG_DIR,
+  WOOCODE_CONFIG_DIR,
   DEFAULT_CONTEXT_FILENAME,
 );
 let originalMemoryContent: string | null = null;
@@ -70,7 +70,7 @@ export async function setup() {
   }
 
   process.env.INTEGRATION_TEST_FILE_DIR = runDir;
-  process.env.GEMINI_CLI_INTEGRATION_TEST = 'true';
+  process.env.WOOCODE_CLI_INTEGRATION_TEST = 'true';
   process.env.TELEMETRY_LOG_FILE = join(runDir, 'telemetry.log');
 
   if (process.env.KEEP_OUTPUT) {

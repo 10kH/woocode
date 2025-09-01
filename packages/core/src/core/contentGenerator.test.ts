@@ -127,8 +127,8 @@ describe('createContentGeneratorConfig', () => {
     vi.unstubAllEnvs();
   });
 
-  it('should configure for Gemini using GEMINI_API_KEY when set', async () => {
-    vi.stubEnv('GEMINI_API_KEY', 'env-gemini-key');
+  it('should configure for Gemini using WOOCODE_API_KEY when set', async () => {
+    vi.stubEnv('WOOCODE_API_KEY', 'env-gemini-key');
     const config = await createContentGeneratorConfig(
       mockConfig,
       AuthType.USE_GEMINI,
@@ -137,8 +137,8 @@ describe('createContentGeneratorConfig', () => {
     expect(config.vertexai).toBe(false);
   });
 
-  it('should not configure for Gemini if GEMINI_API_KEY is empty', async () => {
-    vi.stubEnv('GEMINI_API_KEY', '');
+  it('should not configure for Gemini if WOOCODE_API_KEY is empty', async () => {
+    vi.stubEnv('WOOCODE_API_KEY', '');
     const config = await createContentGeneratorConfig(
       mockConfig,
       AuthType.USE_GEMINI,

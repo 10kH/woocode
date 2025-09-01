@@ -31,8 +31,8 @@ This guide provides solutions to common issues and debugging tips, including top
 
 - **Q: Where are the Gemini CLI configuration or settings files stored?**
   - A: The Gemini CLI configuration is stored in two `settings.json` files:
-    1. In your home directory: `~/.gemini/settings.json`.
-    2. In your project's root directory: `./.gemini/settings.json`.
+    1. In your home directory: `~/.woocode/settings.json`.
+    2. In your project's root directory: `./.woocode/settings.json`.
 
     Refer to [Gemini CLI Configuration](./cli/configuration.md) for more details.
 
@@ -72,7 +72,7 @@ This guide provides solutions to common issues and debugging tips, including top
 - **DEBUG mode not working from project .env file**
   - **Issue:** Setting `DEBUG=true` in a project's `.env` file doesn't enable debug mode for gemini-cli.
   - **Cause:** The `DEBUG` and `DEBUG_MODE` variables are automatically excluded from project `.env` files to prevent interference with gemini-cli behavior.
-  - **Solution:** Use a `.gemini/.env` file instead, or configure the `advanced.excludedEnvVars` setting in your `settings.json` to exclude fewer variables.
+  - **Solution:** Use a `.woocode/.env` file instead, or configure the `advanced.excludedEnvVars` setting in your `settings.json` to exclude fewer variables.
 
 ## Exit Codes
 
@@ -107,4 +107,4 @@ The Gemini CLI uses specific exit codes to indicate the reason for termination. 
 
 ## Existing GitHub Issues similar to yours or creating new Issues
 
-If you encounter an issue that was not covered here in this _Troubleshooting guide_, consider searching the Gemini CLI [Issue tracker on GitHub](https://github.com/google-gemini/gemini-cli/issues). If you can't find an issue similar to yours, consider creating a new GitHub Issue with a detailed description. Pull requests are also welcome!
+If you encounter an issue that was not covered here in this _Troubleshooting guide_, consider searching the Gemini CLI [Issue tracker on GitHub](https://github.com/woocode/woocode/issues). If you can't find an issue similar to yours, consider creating a new GitHub Issue with a detailed description. Pull requests are also welcome!

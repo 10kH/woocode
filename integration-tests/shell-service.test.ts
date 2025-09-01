@@ -125,7 +125,7 @@ describe('ShellExecutionService programmatic integration tests', () => {
   });
 
   it('should propagate environment variables to the child process', async () => {
-    const varName = 'GEMINI_CLI_TEST_VAR';
+    const varName = 'WOOCODE_CLI_TEST_VAR';
     const varValue = `test-value`;
     process.env[varName] = varValue;
 

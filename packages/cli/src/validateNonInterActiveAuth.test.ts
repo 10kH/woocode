@@ -7,7 +7,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { NonInteractiveConfig } from './validateNonInterActiveAuth.js';
 import { validateNonInteractiveAuth } from './validateNonInterActiveAuth.js';
-import { AuthType } from '@google/gemini-cli-core';
+import { AuthType } from 'woocode-core';
 import * as auth from './config/auth.js';
 
 describe('validateNonInterActiveAuth', () => {
@@ -21,10 +21,10 @@ describe('validateNonInterActiveAuth', () => {
   >;
 
   beforeEach(() => {
-    originalEnvGeminiApiKey = process.env['GEMINI_API_KEY'];
+    originalEnvGeminiApiKey = process.env['WOOCODE_API_KEY'];
     originalEnvVertexAi = process.env['GOOGLE_GENAI_USE_VERTEXAI'];
     originalEnvGcp = process.env['GOOGLE_GENAI_USE_GCA'];
-    delete process.env['GEMINI_API_KEY'];
+    delete process.env['WOOCODE_API_KEY'];
     delete process.env['GOOGLE_GENAI_USE_VERTEXAI'];
     delete process.env['GOOGLE_GENAI_USE_GCA'];
     consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -36,9 +36,9 @@ describe('validateNonInterActiveAuth', () => {
 
   afterEach(() => {
     if (originalEnvGeminiApiKey !== undefined) {
-      process.env['GEMINI_API_KEY'] = originalEnvGeminiApiKey;
+      process.env['WOOCODE_API_KEY'] = originalEnvGeminiApiKey;
     } else {
-      delete process.env['GEMINI_API_KEY'];
+      delete process.env['WOOCODE_API_KEY'];
     }
     if (originalEnvVertexAi !== undefined) {
       process.env['GOOGLE_GENAI_USE_VERTEXAI'] = originalEnvVertexAi;
@@ -86,8 +86,8 @@ describe('validateNonInterActiveAuth', () => {
     expect(refreshAuthMock).toHaveBeenCalledWith(AuthType.LOGIN_WITH_GOOGLE);
   });
 
-  it('uses USE_GEMINI if GEMINI_API_KEY is set', async () => {
-    process.env['GEMINI_API_KEY'] = 'fake-key';
+  it('uses USE_GEMINI if WOOCODE_API_KEY is set', async () => {
+    process.env['WOOCODE_API_KEY'] = 'fake-key';
     const nonInteractiveConfig: NonInteractiveConfig = {
       refreshAuth: refreshAuthMock,
     };
@@ -130,7 +130,7 @@ describe('validateNonInterActiveAuth', () => {
 
   it('uses LOGIN_WITH_GOOGLE if GOOGLE_GENAI_USE_GCA is set, even with other env vars', async () => {
     process.env['GOOGLE_GENAI_USE_GCA'] = 'true';
-    process.env['GEMINI_API_KEY'] = 'fake-key';
+    process.env['WOOCODE_API_KEY'] = 'fake-key';
     process.env['GOOGLE_GENAI_USE_VERTEXAI'] = 'true';
     process.env['GOOGLE_CLOUD_PROJECT'] = 'test-project';
     process.env['GOOGLE_CLOUD_LOCATION'] = 'us-central1';
@@ -145,8 +145,8 @@ describe('validateNonInterActiveAuth', () => {
     expect(refreshAuthMock).toHaveBeenCalledWith(AuthType.LOGIN_WITH_GOOGLE);
   });
 
-  it('uses USE_VERTEX_AI if both GEMINI_API_KEY and GOOGLE_GENAI_USE_VERTEXAI are set', async () => {
-    process.env['GEMINI_API_KEY'] = 'fake-key';
+  it('uses USE_VERTEX_AI if both WOOCODE_API_KEY and GOOGLE_GENAI_USE_VERTEXAI are set', async () => {
+    process.env['WOOCODE_API_KEY'] = 'fake-key';
     process.env['GOOGLE_GENAI_USE_VERTEXAI'] = 'true';
     process.env['GOOGLE_CLOUD_PROJECT'] = 'test-project';
     process.env['GOOGLE_CLOUD_LOCATION'] = 'us-central1';
@@ -161,9 +161,9 @@ describe('validateNonInterActiveAuth', () => {
     expect(refreshAuthMock).toHaveBeenCalledWith(AuthType.USE_VERTEX_AI);
   });
 
-  it('uses USE_GEMINI if GOOGLE_GENAI_USE_VERTEXAI is false, GEMINI_API_KEY is set, and project/location are available', async () => {
+  it('uses USE_GEMINI if GOOGLE_GENAI_USE_VERTEXAI is false, WOOCODE_API_KEY is set, and project/location are available', async () => {
     process.env['GOOGLE_GENAI_USE_VERTEXAI'] = 'false';
-    process.env['GEMINI_API_KEY'] = 'fake-key';
+    process.env['WOOCODE_API_KEY'] = 'fake-key';
     process.env['GOOGLE_CLOUD_PROJECT'] = 'test-project';
     process.env['GOOGLE_CLOUD_LOCATION'] = 'us-central1';
     const nonInteractiveConfig: NonInteractiveConfig = {
@@ -179,7 +179,7 @@ describe('validateNonInterActiveAuth', () => {
 
   it('uses configuredAuthType if provided', async () => {
     // Set required env var for USE_GEMINI
-    process.env['GEMINI_API_KEY'] = 'fake-key';
+    process.env['WOOCODE_API_KEY'] = 'fake-key';
     const nonInteractiveConfig: NonInteractiveConfig = {
       refreshAuth: refreshAuthMock,
     };

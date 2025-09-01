@@ -23,18 +23,18 @@ const projectHash = crypto
   .update(projectRoot)
   .digest('hex');
 
-// User-level .gemini directory in home
-const USER_GEMINI_DIR = path.join(os.homedir(), '.gemini');
-// Project-level .gemini directory in the workspace
-const WORKSPACE_GEMINI_DIR = path.join(projectRoot, '.gemini');
+// User-level .woocode directory in home
+const USER_WOOCODE_DIR = path.join(os.homedir(), '.woocode');
+// Project-level .woocode directory in the workspace
+const WORKSPACE_WOOCODE_DIR = path.join(projectRoot, '.woocode');
 
-// Telemetry artifacts are stored in a hashed directory under the user's ~/.gemini/tmp
-export const OTEL_DIR = path.join(USER_GEMINI_DIR, 'tmp', projectHash, 'otel');
+// Telemetry artifacts are stored in a hashed directory under the user's ~/.woocode/tmp
+export const OTEL_DIR = path.join(USER_WOOCODE_DIR, 'tmp', projectHash, 'otel');
 export const BIN_DIR = path.join(OTEL_DIR, 'bin');
 
-// Workspace settings remain in the project's .gemini directory
+// Workspace settings remain in the project's .woocode directory
 export const WORKSPACE_SETTINGS_FILE = path.join(
-  WORKSPACE_GEMINI_DIR,
+  WORKSPACE_WOOCODE_DIR,
   'settings.json',
 );
 

@@ -21,7 +21,7 @@ jobs:
   triage-issues:
     timeout-minutes: 10
     if: |-
-      ${{ github.repository == 'google-gemini/gemini-cli' }}
+      ${{ github.repository == 'woocode/woocode' }}
     runs-on: 'ubuntu-latest'
     steps:
       - name: 'Checkout'
@@ -90,7 +90,7 @@ jobs:
           gcp_project_id: '${{ vars.GOOGLE_CLOUD_PROJECT }}'
           gcp_location: '${{ vars.GOOGLE_CLOUD_LOCATION }}'
           gcp_service_account: '${{ vars.SERVICE_ACCOUNT_EMAIL }}'
-          gemini_api_key: '${{ secrets.GEMINI_API_KEY }}'
+          gemini_api_key: '${{ secrets.WOOCODE_API_KEY }}'
           use_vertex_ai: '${{ vars.GOOGLE_GENAI_USE_VERTEXAI }}'
           use_gemini_code_assist: '${{ vars.GOOGLE_GENAI_USE_GCA }}'
           settings: |-
@@ -254,11 +254,11 @@ jobs:
 
       - name: 'Apply Labels to Issues'
         if: |-
-          ${{ steps.gemini_issue_analysis.outcome == 'success' &&
-              steps.gemini_issue_analysis.outputs.summary != '[]' }}
+          ${{ steps.woocode_issue_analysis.outcome == 'success' &&
+              steps.woocode_issue_analysis.outputs.summary != '[]' }}
         env:
           REPOSITORY: '${{ github.repository }}'
-          LABELS_OUTPUT: '${{ steps.gemini_issue_analysis.outputs.summary }}'
+          LABELS_OUTPUT: '${{ steps.woocode_issue_analysis.outputs.summary }}'
         uses: 'actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea'
         with:
           github-token: '${{ steps.generate_token.outputs.token }}'

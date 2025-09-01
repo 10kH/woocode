@@ -65,11 +65,11 @@ export interface ReadManyFilesParams {
   useDefaultExcludes?: boolean;
 
   /**
-   * Whether to respect .gitignore and .geminiignore patterns (optional, defaults to true)
+   * Whether to respect .gitignore and .woocodeignore patterns (optional, defaults to true)
    */
   file_filtering_options?: {
     respect_git_ignore?: boolean;
-    respect_gemini_ignore?: boolean;
+    respect_woocode_ignore?: boolean;
   };
 }
 
@@ -94,7 +94,7 @@ type FileProcessingResult =
 
 /**
  * Creates the default exclusion patterns including dynamic patterns.
- * This combines the shared patterns with dynamic patterns like GEMINI.md.
+ * This combines the shared patterns with dynamic patterns like WOOCODE.md.
  * TODO(adh): Consider making this configurable or extendable through a command line argument.
  */
 function getDefaultExcludes(config?: Config): string[] {
@@ -126,17 +126,17 @@ ${this.config.getTargetDir()}
     // Determine the final list of exclusion patterns exactly as in execute method
     const paramExcludes = this.params.exclude || [];
     const paramUseDefaultExcludes = this.params.useDefaultExcludes !== false;
-    const geminiIgnorePatterns = this.config
+    const woocodeIgnorePatterns = this.config
       .getFileService()
-      .getGeminiIgnorePatterns();
+      .getWoocodeIgnorePatterns();
     const finalExclusionPatternsForDescription: string[] =
       paramUseDefaultExcludes
         ? [
             ...getDefaultExcludes(this.config),
             ...paramExcludes,
-            ...geminiIgnorePatterns,
+            ...woocodeIgnorePatterns,
           ]
-        : [...paramExcludes, ...geminiIgnorePatterns];
+        : [...paramExcludes, ...woocodeIgnorePatterns];
 
     let excludeDesc = `Excluding: ${
       finalExclusionPatternsForDescription.length > 0
@@ -149,13 +149,13 @@ ${finalExclusionPatternsForDescription
         : 'none specified'
     }`;
 
-    // Add a note if .geminiignore patterns contributed to the final list of exclusions
-    if (geminiIgnorePatterns.length > 0) {
-      const geminiPatternsInEffect = geminiIgnorePatterns.filter((p) =>
+    // Add a note if .woocodeignore patterns contributed to the final list of exclusions
+    if (woocodeIgnorePatterns.length > 0) {
+      const woocodePatternsInEffect = woocodeIgnorePatterns.filter((p) =>
         finalExclusionPatternsForDescription.includes(p),
       ).length;
-      if (geminiPatternsInEffect > 0) {
-        excludeDesc += ` (includes ${geminiPatternsInEffect} from .geminiignore)`;
+      if (woocodePatternsInEffect > 0) {
+        excludeDesc += ` (includes ${woocodePatternsInEffect} from .woocodeignore)`;
       }
     }
 
@@ -180,9 +180,9 @@ ${finalExclusionPatternsForDescription
       respectGitIgnore:
         this.params.file_filtering_options?.respect_git_ignore ??
         defaultFileIgnores.respectGitIgnore, // Use the property from the returned object
-      respectGeminiIgnore:
-        this.params.file_filtering_options?.respect_gemini_ignore ??
-        defaultFileIgnores.respectGeminiIgnore, // Use the property from the returned object
+      respectWoocodeIgnore:
+        this.params.file_filtering_options?.respect_woocode_ignore ??
+        defaultFileIgnores.respectWoocodeIgnore, // Use the property from the returned object
     };
     // Get centralized file discovery service
     const fileDiscovery = this.config.getFileService();
@@ -235,14 +235,14 @@ ${finalExclusionPatternsForDescription
               entries.map((p) => path.relative(this.config.getTargetDir(), p)),
               {
                 respectGitIgnore: true,
-                respectGeminiIgnore: false,
+                respectWoocodeIgnore: false,
               },
             )
             .map((p) => path.resolve(this.config.getTargetDir(), p))
         : entries;
 
-      // Apply gemini ignore filtering if enabled
-      const finalFilteredEntries = fileFilteringOptions.respectGeminiIgnore
+      // Apply woocode ignore filtering if enabled
+      const finalFilteredEntries = fileFilteringOptions.respectWoocodeIgnore
         ? fileDiscovery
             .filterFiles(
               gitFilteredEntries.map((p) =>
@@ -250,14 +250,14 @@ ${finalExclusionPatternsForDescription
               ),
               {
                 respectGitIgnore: false,
-                respectGeminiIgnore: true,
+                respectWoocodeIgnore: true,
               },
             )
             .map((p) => path.resolve(this.config.getTargetDir(), p))
         : gitFilteredEntries;
 
       let gitIgnoredCount = 0;
-      let geminiIgnoredCount = 0;
+      let woocodeIgnoredCount = 0;
 
       for (const absoluteFilePath of entries) {
         // Security check: ensure the glob library didn't return something outside the workspace.
@@ -282,12 +282,12 @@ ${finalExclusionPatternsForDescription
           continue;
         }
 
-        // Check if this file was filtered out by gemini ignore
+        // Check if this file was filtered out by woocode ignore
         if (
-          fileFilteringOptions.respectGeminiIgnore &&
+          fileFilteringOptions.respectWoocodeIgnore &&
           !finalFilteredEntries.includes(absoluteFilePath)
         ) {
-          geminiIgnoredCount++;
+          woocodeIgnoredCount++;
           continue;
         }
 
@@ -302,11 +302,11 @@ ${finalExclusionPatternsForDescription
         });
       }
 
-      // Add info about gemini-ignored files if any were filtered
-      if (geminiIgnoredCount > 0) {
+      // Add info about woocode-ignored files if any were filtered
+      if (woocodeIgnoredCount > 0) {
         skippedFiles.push({
-          path: `${geminiIgnoredCount} file(s)`,
-          reason: 'gemini ignored',
+          path: `${woocodeIgnoredCount} file(s)`,
+          reason: 'woocode ignored',
         });
       }
     } catch (error) {
@@ -570,7 +570,7 @@ export class ReadManyFilesTool extends BaseDeclarativeTool<
         },
         file_filtering_options: {
           description:
-            'Whether to respect ignore patterns from .gitignore or .geminiignore',
+            'Whether to respect ignore patterns from .gitignore or .woocodeignore',
           type: 'object',
           properties: {
             respect_git_ignore: {
@@ -578,9 +578,9 @@ export class ReadManyFilesTool extends BaseDeclarativeTool<
                 'Optional: Whether to respect .gitignore patterns when listing files. Only available in git repositories. Defaults to true.',
               type: 'boolean',
             },
-            respect_gemini_ignore: {
+            respect_woocode_ignore: {
               description:
-                'Optional: Whether to respect .geminiignore patterns when listing files. Defaults to true.',
+                'Optional: Whether to respect .woocodeignore patterns when listing files. Defaults to true.',
               type: 'boolean',
             },
           },

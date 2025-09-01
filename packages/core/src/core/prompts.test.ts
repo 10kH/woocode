@@ -10,7 +10,7 @@ import { isGitRepository } from '../utils/gitUtils.js';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { GEMINI_CONFIG_DIR } from '../tools/memoryTool.js';
+import { WOOCODE_CONFIG_DIR } from '../tools/memoryTool.js';
 
 // Mock tool names if they are dynamically generated or complex
 vi.mock('../tools/ls', () => ({ LSTool: { Name: 'list_directory' } }));
@@ -35,8 +35,8 @@ vi.mock('node:fs');
 describe('Core System Prompt (prompts.ts)', () => {
   beforeEach(() => {
     vi.resetAllMocks();
-    vi.stubEnv('GEMINI_SYSTEM_MD', undefined);
-    vi.stubEnv('GEMINI_WRITE_SYSTEM_MD', undefined);
+    vi.stubEnv('WOOCODE_SYSTEM_MD', undefined);
+    vi.stubEnv('WOOCODE_WRITE_SYSTEM_MD', undefined);
   });
 
   it('should return the base prompt when no userMemory is provided', () => {
@@ -117,35 +117,35 @@ describe('Core System Prompt (prompts.ts)', () => {
     expect(prompt).toMatchSnapshot();
   });
 
-  describe('GEMINI_SYSTEM_MD environment variable', () => {
-    it('should use default prompt when GEMINI_SYSTEM_MD is "false"', () => {
-      vi.stubEnv('GEMINI_SYSTEM_MD', 'false');
+  describe('WOOCODE_SYSTEM_MD environment variable', () => {
+    it('should use default prompt when WOOCODE_SYSTEM_MD is "false"', () => {
+      vi.stubEnv('WOOCODE_SYSTEM_MD', 'false');
       const prompt = getCoreSystemPrompt();
       expect(fs.readFileSync).not.toHaveBeenCalled();
       expect(prompt).not.toContain('custom system prompt');
     });
 
-    it('should use default prompt when GEMINI_SYSTEM_MD is "0"', () => {
-      vi.stubEnv('GEMINI_SYSTEM_MD', '0');
+    it('should use default prompt when WOOCODE_SYSTEM_MD is "0"', () => {
+      vi.stubEnv('WOOCODE_SYSTEM_MD', '0');
       const prompt = getCoreSystemPrompt();
       expect(fs.readFileSync).not.toHaveBeenCalled();
       expect(prompt).not.toContain('custom system prompt');
     });
 
-    it('should throw error if GEMINI_SYSTEM_MD points to a non-existent file', () => {
+    it('should throw error if WOOCODE_SYSTEM_MD points to a non-existent file', () => {
       const customPath = '/non/existent/path/system.md';
-      vi.stubEnv('GEMINI_SYSTEM_MD', customPath);
+      vi.stubEnv('WOOCODE_SYSTEM_MD', customPath);
       vi.mocked(fs.existsSync).mockReturnValue(false);
       expect(() => getCoreSystemPrompt()).toThrow(
         `missing system prompt file '${path.resolve(customPath)}'`,
       );
     });
 
-    it('should read from default path when GEMINI_SYSTEM_MD is "true"', () => {
+    it('should read from default path when WOOCODE_SYSTEM_MD is "true"', () => {
       const defaultPath = path.resolve(
-        path.join(GEMINI_CONFIG_DIR, 'system.md'),
+        path.join(WOOCODE_CONFIG_DIR, 'system.md'),
       );
-      vi.stubEnv('GEMINI_SYSTEM_MD', 'true');
+      vi.stubEnv('WOOCODE_SYSTEM_MD', 'true');
       vi.mocked(fs.existsSync).mockReturnValue(true);
       vi.mocked(fs.readFileSync).mockReturnValue('custom system prompt');
 
@@ -154,11 +154,11 @@ describe('Core System Prompt (prompts.ts)', () => {
       expect(prompt).toBe('custom system prompt');
     });
 
-    it('should read from default path when GEMINI_SYSTEM_MD is "1"', () => {
+    it('should read from default path when WOOCODE_SYSTEM_MD is "1"', () => {
       const defaultPath = path.resolve(
-        path.join(GEMINI_CONFIG_DIR, 'system.md'),
+        path.join(WOOCODE_CONFIG_DIR, 'system.md'),
       );
-      vi.stubEnv('GEMINI_SYSTEM_MD', '1');
+      vi.stubEnv('WOOCODE_SYSTEM_MD', '1');
       vi.mocked(fs.existsSync).mockReturnValue(true);
       vi.mocked(fs.readFileSync).mockReturnValue('custom system prompt');
 
@@ -167,9 +167,9 @@ describe('Core System Prompt (prompts.ts)', () => {
       expect(prompt).toBe('custom system prompt');
     });
 
-    it('should read from custom path when GEMINI_SYSTEM_MD provides one, preserving case', () => {
+    it('should read from custom path when WOOCODE_SYSTEM_MD provides one, preserving case', () => {
       const customPath = path.resolve('/custom/path/SyStEm.Md');
-      vi.stubEnv('GEMINI_SYSTEM_MD', customPath);
+      vi.stubEnv('WOOCODE_SYSTEM_MD', customPath);
       vi.mocked(fs.existsSync).mockReturnValue(true);
       vi.mocked(fs.readFileSync).mockReturnValue('custom system prompt');
 
@@ -178,12 +178,12 @@ describe('Core System Prompt (prompts.ts)', () => {
       expect(prompt).toBe('custom system prompt');
     });
 
-    it('should expand tilde in custom path when GEMINI_SYSTEM_MD is set', () => {
+    it('should expand tilde in custom path when WOOCODE_SYSTEM_MD is set', () => {
       const homeDir = '/Users/test';
       vi.spyOn(os, 'homedir').mockReturnValue(homeDir);
       const customPath = '~/custom/system.md';
       const expectedPath = path.join(homeDir, 'custom/system.md');
-      vi.stubEnv('GEMINI_SYSTEM_MD', customPath);
+      vi.stubEnv('WOOCODE_SYSTEM_MD', customPath);
       vi.mocked(fs.existsSync).mockReturnValue(true);
       vi.mocked(fs.readFileSync).mockReturnValue('custom system prompt');
 
@@ -196,24 +196,24 @@ describe('Core System Prompt (prompts.ts)', () => {
     });
   });
 
-  describe('GEMINI_WRITE_SYSTEM_MD environment variable', () => {
-    it('should not write to file when GEMINI_WRITE_SYSTEM_MD is "false"', () => {
-      vi.stubEnv('GEMINI_WRITE_SYSTEM_MD', 'false');
+  describe('WOOCODE_WRITE_SYSTEM_MD environment variable', () => {
+    it('should not write to file when WOOCODE_WRITE_SYSTEM_MD is "false"', () => {
+      vi.stubEnv('WOOCODE_WRITE_SYSTEM_MD', 'false');
       getCoreSystemPrompt();
       expect(fs.writeFileSync).not.toHaveBeenCalled();
     });
 
-    it('should not write to file when GEMINI_WRITE_SYSTEM_MD is "0"', () => {
-      vi.stubEnv('GEMINI_WRITE_SYSTEM_MD', '0');
+    it('should not write to file when WOOCODE_WRITE_SYSTEM_MD is "0"', () => {
+      vi.stubEnv('WOOCODE_WRITE_SYSTEM_MD', '0');
       getCoreSystemPrompt();
       expect(fs.writeFileSync).not.toHaveBeenCalled();
     });
 
-    it('should write to default path when GEMINI_WRITE_SYSTEM_MD is "true"', () => {
+    it('should write to default path when WOOCODE_WRITE_SYSTEM_MD is "true"', () => {
       const defaultPath = path.resolve(
-        path.join(GEMINI_CONFIG_DIR, 'system.md'),
+        path.join(WOOCODE_CONFIG_DIR, 'system.md'),
       );
-      vi.stubEnv('GEMINI_WRITE_SYSTEM_MD', 'true');
+      vi.stubEnv('WOOCODE_WRITE_SYSTEM_MD', 'true');
       getCoreSystemPrompt();
       expect(fs.writeFileSync).toHaveBeenCalledWith(
         defaultPath,
@@ -221,11 +221,11 @@ describe('Core System Prompt (prompts.ts)', () => {
       );
     });
 
-    it('should write to default path when GEMINI_WRITE_SYSTEM_MD is "1"', () => {
+    it('should write to default path when WOOCODE_WRITE_SYSTEM_MD is "1"', () => {
       const defaultPath = path.resolve(
-        path.join(GEMINI_CONFIG_DIR, 'system.md'),
+        path.join(WOOCODE_CONFIG_DIR, 'system.md'),
       );
-      vi.stubEnv('GEMINI_WRITE_SYSTEM_MD', '1');
+      vi.stubEnv('WOOCODE_WRITE_SYSTEM_MD', '1');
       getCoreSystemPrompt();
       expect(fs.writeFileSync).toHaveBeenCalledWith(
         defaultPath,
@@ -233,9 +233,9 @@ describe('Core System Prompt (prompts.ts)', () => {
       );
     });
 
-    it('should write to custom path when GEMINI_WRITE_SYSTEM_MD provides one', () => {
+    it('should write to custom path when WOOCODE_WRITE_SYSTEM_MD provides one', () => {
       const customPath = path.resolve('/custom/path/system.md');
-      vi.stubEnv('GEMINI_WRITE_SYSTEM_MD', customPath);
+      vi.stubEnv('WOOCODE_WRITE_SYSTEM_MD', customPath);
       getCoreSystemPrompt();
       expect(fs.writeFileSync).toHaveBeenCalledWith(
         customPath,
@@ -243,12 +243,12 @@ describe('Core System Prompt (prompts.ts)', () => {
       );
     });
 
-    it('should expand tilde in custom path when GEMINI_WRITE_SYSTEM_MD is set', () => {
+    it('should expand tilde in custom path when WOOCODE_WRITE_SYSTEM_MD is set', () => {
       const homeDir = '/Users/test';
       vi.spyOn(os, 'homedir').mockReturnValue(homeDir);
       const customPath = '~/custom/system.md';
       const expectedPath = path.join(homeDir, 'custom/system.md');
-      vi.stubEnv('GEMINI_WRITE_SYSTEM_MD', customPath);
+      vi.stubEnv('WOOCODE_WRITE_SYSTEM_MD', customPath);
       getCoreSystemPrompt();
       expect(fs.writeFileSync).toHaveBeenCalledWith(
         path.resolve(expectedPath),
@@ -256,12 +256,12 @@ describe('Core System Prompt (prompts.ts)', () => {
       );
     });
 
-    it('should expand tilde in custom path when GEMINI_WRITE_SYSTEM_MD is just ~', () => {
+    it('should expand tilde in custom path when WOOCODE_WRITE_SYSTEM_MD is just ~', () => {
       const homeDir = '/Users/test';
       vi.spyOn(os, 'homedir').mockReturnValue(homeDir);
       const customPath = '~';
       const expectedPath = homeDir;
-      vi.stubEnv('GEMINI_WRITE_SYSTEM_MD', customPath);
+      vi.stubEnv('WOOCODE_WRITE_SYSTEM_MD', customPath);
       getCoreSystemPrompt();
       expect(fs.writeFileSync).toHaveBeenCalledWith(
         path.resolve(expectedPath),

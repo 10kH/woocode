@@ -41,7 +41,7 @@ This will find the correct extension for your IDE and install it.
 
 You can also install the extension directly from a marketplace.
 
-- **For Visual Studio Code:** Install from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=google.gemini-cli-vscode-ide-companion).
+- **For Visual Studio Code:** Install from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=google.woocode-cli-vscode-ide-companion).
 - **For VS Code Forks:** To support forks of VS Code, the extension is also published on the [Open VSX Registry](https://open-vsx.org/extension/google/gemini-cli-vscode-ide-companion). Follow your editor's instructions for installing extensions from this registry.
 
 > NOTE:
@@ -114,7 +114,7 @@ If you encounter issues with IDE integration, here are some common error message
 ### Connection Errors
 
 - **Message:** `🔴 Disconnected: Failed to connect to IDE companion extension in [IDE Name]. Please ensure the extension is running. To install the extension, run /ide install.`
-  - **Cause:** Gemini CLI could not find the necessary environment variables (`GEMINI_CLI_IDE_WORKSPACE_PATH` or `GEMINI_CLI_IDE_SERVER_PORT`) to connect to the IDE. This usually means the IDE companion extension is not running or did not initialize correctly.
+  - **Cause:** Gemini CLI could not find the necessary environment variables (`WOOCODE_CLI_IDE_WORKSPACE_PATH` or `WOOCODE_CLI_IDE_SERVER_PORT`) to connect to the IDE. This usually means the IDE companion extension is not running or did not initialize correctly.
   - **Solution:**
     1.  Make sure you have installed the **Gemini CLI Companion** extension in your IDE and that it is enabled.
     2.  Open a new terminal window in your IDE to ensure it picks up the correct environment.

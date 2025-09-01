@@ -7,8 +7,8 @@
 import type {
   MCPServerConfig,
   GeminiCLIExtension,
-} from '@google/gemini-cli-core';
-import { GEMINI_DIR, Storage } from '@google/gemini-cli-core';
+} from 'woocode-core';
+import { WOOCODE_DIR, Storage } from 'woocode-core';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
@@ -19,10 +19,10 @@ import { recursivelyHydrateStrings } from './extensions/variables.js';
 import { isWorkspaceTrusted } from './trustedFolders.js';
 import { resolveEnvVarsInObject } from '../utils/envVarResolver.js';
 
-export const EXTENSIONS_DIRECTORY_NAME = path.join(GEMINI_DIR, 'extensions');
+export const EXTENSIONS_DIRECTORY_NAME = path.join(WOOCODE_DIR, 'extensions');
 
 export const EXTENSIONS_CONFIG_FILENAME = 'gemini-extension.json';
-export const INSTALL_METADATA_FILENAME = '.gemini-extension-install.json';
+export const INSTALL_METADATA_FILENAME = '.woocode-extension-install.json';
 
 export interface Extension {
   path: string;
@@ -234,7 +234,7 @@ function loadInstallMetadata(
 
 function getContextFileNames(config: ExtensionConfig): string[] {
   if (!config.contextFileName) {
-    return ['GEMINI.md'];
+    return ['WOOCODE.md'];
   } else if (!Array.isArray(config.contextFileName)) {
     return [config.contextFileName];
   }
@@ -367,7 +367,7 @@ export async function installExtension(
       );
     }
 
-    // ~/.gemini/extensions/{ExtensionConfig.name}.
+    // ~/.woocode/extensions/{ExtensionConfig.name}.
     newExtensionName = newExtension.config.name;
     const extensionStorage = new ExtensionStorage(newExtensionName);
     const destinationPath = extensionStorage.getExtensionDir();

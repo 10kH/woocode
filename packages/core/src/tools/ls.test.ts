@@ -54,7 +54,7 @@ describe('LSTool', () => {
     // Mock FileService
     mockFileService = {
       shouldGitIgnoreFile: vi.fn().mockReturnValue(false),
-      shouldGeminiIgnoreFile: vi.fn().mockReturnValue(false),
+      shouldWoocodeIgnoreFile: vi.fn().mockReturnValue(false),
     } as unknown as FileDiscoveryService;
 
     // Mock Config
@@ -64,7 +64,7 @@ describe('LSTool', () => {
       getFileService: vi.fn().mockReturnValue(mockFileService),
       getFileFilteringOptions: vi.fn().mockReturnValue({
         respectGitIgnore: true,
-        respectGeminiIgnore: true,
+        respectWoocodeIgnore: true,
       }),
     } as unknown as Config;
 
@@ -264,7 +264,7 @@ describe('LSTool', () => {
         } as fs.Stats;
       });
       vi.mocked(fs.readdirSync).mockReturnValue(mockFiles as any);
-      (mockFileService.shouldGeminiIgnoreFile as any).mockImplementation(
+      (mockFileService.shouldWoocodeIgnoreFile as any).mockImplementation(
         (path: string) => path.includes('private.js'),
       );
 

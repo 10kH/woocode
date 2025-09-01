@@ -11,7 +11,7 @@ import { Colors } from '../colors.js';
 import { RadioButtonSelect } from './shared/RadioButtonSelect.js';
 import type { LoadedSettings } from '../../config/settings.js';
 import { SettingScope } from '../../config/settings.js';
-import { AuthType } from '@google/gemini-cli-core';
+import { AuthType } from 'woocode-core';
 import { validateAuthMethod } from '../../config/auth.js';
 import { useKeypress } from '../hooks/useKeypress.js';
 
@@ -165,7 +165,7 @@ export function AuthDialog({
       <Box marginTop={1}>
         <Text color={Colors.AccentBlue}>
           {
-            'https://github.com/google-gemini/gemini-cli/blob/main/docs/tos-privacy.md'
+            'https://github.com/woocode/woocode/blob/main/docs/tos-privacy.md'
           }
         </Text>
       </Box>

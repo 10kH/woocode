@@ -57,10 +57,10 @@ describe('IdeClient', () => {
       undefined;
 
     // Mock environment variables
-    process.env['GEMINI_CLI_IDE_WORKSPACE_PATH'] = '/test/workspace';
-    delete process.env['GEMINI_CLI_IDE_SERVER_PORT'];
-    delete process.env['GEMINI_CLI_IDE_SERVER_STDIO_COMMAND'];
-    delete process.env['GEMINI_CLI_IDE_SERVER_STDIO_ARGS'];
+    process.env['WOOCODE_CLI_IDE_WORKSPACE_PATH'] = '/test/workspace';
+    delete process.env['WOOCODE_CLI_IDE_SERVER_PORT'];
+    delete process.env['WOOCODE_CLI_IDE_SERVER_STDIO_COMMAND'];
+    delete process.env['WOOCODE_CLI_IDE_SERVER_STDIO_ARGS'];
 
     // Mock dependencies
     vi.spyOn(process, 'cwd').mockReturnValue('/test/workspace/sub-dir');
@@ -108,7 +108,7 @@ describe('IdeClient', () => {
       await ideClient.connect();
 
       expect(fs.promises.readFile).toHaveBeenCalledWith(
-        path.join('/tmp', 'gemini-ide-server-12345.json'),
+        path.join('/tmp', 'woocode-ide-server-12345.json'),
         'utf8',
       );
       expect(StreamableHTTPClientTransport).toHaveBeenCalledWith(
@@ -159,7 +159,7 @@ describe('IdeClient', () => {
       vi.mocked(fs.promises.readFile).mockRejectedValue(
         new Error('File not found'),
       );
-      process.env['GEMINI_CLI_IDE_SERVER_PORT'] = '9090';
+      process.env['WOOCODE_CLI_IDE_SERVER_PORT'] = '9090';
 
       const ideClient = await IdeClient.getInstance();
       await ideClient.connect();
@@ -178,8 +178,8 @@ describe('IdeClient', () => {
       vi.mocked(fs.promises.readFile).mockRejectedValue(
         new Error('File not found'),
       );
-      process.env['GEMINI_CLI_IDE_SERVER_STDIO_COMMAND'] = 'env-cmd';
-      process.env['GEMINI_CLI_IDE_SERVER_STDIO_ARGS'] = '["--bar"]';
+      process.env['WOOCODE_CLI_IDE_SERVER_STDIO_COMMAND'] = 'env-cmd';
+      process.env['WOOCODE_CLI_IDE_SERVER_STDIO_ARGS'] = '["--bar"]';
 
       const ideClient = await IdeClient.getInstance();
       await ideClient.connect();
@@ -197,7 +197,7 @@ describe('IdeClient', () => {
     it('should prioritize file config over environment variables', async () => {
       const config = { port: '8080' };
       vi.mocked(fs.promises.readFile).mockResolvedValue(JSON.stringify(config));
-      process.env['GEMINI_CLI_IDE_SERVER_PORT'] = '9090';
+      process.env['WOOCODE_CLI_IDE_SERVER_PORT'] = '9090';
 
       const ideClient = await IdeClient.getInstance();
       await ideClient.connect();

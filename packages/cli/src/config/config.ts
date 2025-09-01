@@ -15,7 +15,7 @@ import type {
   TelemetryTarget,
   FileFilteringOptions,
   MCPServerConfig,
-} from '@google/gemini-cli-core';
+} from 'woocode-core';
 import { extensionsCommand } from '../commands/extensions.js';
 import {
   Config,
@@ -23,14 +23,14 @@ import {
   setGeminiMdFilename as setServerGeminiMdFilename,
   getCurrentGeminiMdFilename,
   ApprovalMode,
-  DEFAULT_GEMINI_MODEL,
-  DEFAULT_GEMINI_EMBEDDING_MODEL,
+  DEFAULT_WOOCODE_MODEL,
+  DEFAULT_WOOCODE_EMBEDDING_MODEL,
   DEFAULT_MEMORY_FILE_FILTERING_OPTIONS,
   FileDiscoveryService,
   ShellTool,
   EditTool,
   WriteFileTool,
-} from '@google/gemini-cli-core';
+} from 'woocode-core';
 import type { Settings } from './settings.js';
 
 import type { Extension } from './extension.js';
@@ -80,6 +80,8 @@ export interface CliArgs {
   screenReader: boolean | undefined;
   useSmartEdit: boolean | undefined;
   sessionSummary: string | undefined;
+  provider: string | undefined;
+  useProviderSystem: boolean | undefined;
 }
 
 export async function parseArguments(settings: Settings): Promise<CliArgs> {
@@ -95,7 +97,12 @@ export async function parseArguments(settings: Settings): Promise<CliArgs> {
           alias: 'm',
           type: 'string',
           description: `Model`,
-          default: process.env['GEMINI_MODEL'],
+          default: process.env['WOOCODE_MODEL'],
+        })
+        .option('provider', {
+          type: 'string',
+          description: 'LLM provider (huggingface, ollama, openai, anthropic, gemini)',
+          default: process.env['WOOCODE_PROVIDER'],
         })
         .option('prompt', {
           alias: 'p',
@@ -232,6 +239,17 @@ export async function parseArguments(settings: Settings): Promise<CliArgs> {
         .option('session-summary', {
           type: 'string',
           description: 'File to write session summary to.',
+        })
+        .option('provider', {
+          type: 'string',
+          description: 'LLM provider to use (huggingface, ollama, google)',
+          default: 'huggingface',
+          choices: ['huggingface', 'ollama', 'google'],
+        })
+        .option('use-provider-system', {
+          type: 'boolean',
+          description: 'Enable new provider system for local models',
+          default: true,
         })
         .deprecateOption(
           'telemetry',
@@ -541,7 +559,7 @@ export async function loadCliConfig(
       : (settings.ui?.accessibility?.screenReader ?? false);
   return new Config({
     sessionId,
-    embeddingModel: DEFAULT_GEMINI_EMBEDDING_MODEL,
+    embeddingModel: DEFAULT_WOOCODE_EMBEDDING_MODEL,
     sandbox: sandboxConfig,
     targetDir: cwd,
     includeDirectories,
@@ -558,7 +576,7 @@ export async function loadCliConfig(
     mcpServerCommand: settings.mcp?.serverCommand,
     mcpServers,
     userMemory: memoryContent,
-    geminiMdFileCount: fileCount,
+    woocodeMdFileCount: fileCount,
     approvalMode,
     showMemoryUsage:
       argv.showMemoryUsage || settings.ui?.showMemoryUsage || false,
@@ -586,7 +604,7 @@ export async function loadCliConfig(
     // Git-aware file filtering settings
     fileFiltering: {
       respectGitIgnore: settings.context?.fileFiltering?.respectGitIgnore,
-      respectGeminiIgnore: settings.context?.fileFiltering?.respectGeminiIgnore,
+      respectWoocodeIgnore: settings.context?.fileFiltering?.respectWoocodeIgnore,
       enableRecursiveFileSearch:
         settings.context?.fileFiltering?.enableRecursiveFileSearch,
       disableFuzzySearch: settings.context?.fileFiltering?.disableFuzzySearch,
@@ -602,7 +620,7 @@ export async function loadCliConfig(
     cwd,
     fileDiscoveryService: fileService,
     bugCommand: settings.advanced?.bugCommand,
-    model: argv.model || settings.model?.name || DEFAULT_GEMINI_MODEL,
+    model: argv.model || settings.model?.name || DEFAULT_WOOCODE_MODEL,
     extensionContextFilePaths,
     maxSessionTurns: settings.model?.maxSessionTurns ?? -1,
     experimentalZedIntegration: argv.experimentalAcp || false,
@@ -623,6 +641,8 @@ export async function loadCliConfig(
     enablePromptCompletion: settings.general?.enablePromptCompletion ?? false,
     eventEmitter: appEvents,
     useSmartEdit: argv.useSmartEdit ?? settings.useSmartEdit,
+    provider: argv.provider || settings.provider || 'huggingface',
+    useProviderSystem: argv.useProviderSystem ?? settings.useProviderSystem ?? true,
   });
 }
 

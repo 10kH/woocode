@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AuthType } from '@google/gemini-cli-core';
+import { AuthType } from 'woocode-core';
 import { vi } from 'vitest';
 import { validateAuthMethod } from './auth.js';
 
@@ -33,15 +33,15 @@ describe('validateAuthMethod', () => {
   });
 
   describe('USE_GEMINI', () => {
-    it('should return null if GEMINI_API_KEY is set', () => {
-      vi.stubEnv('GEMINI_API_KEY', 'test-key');
+    it('should return null if WOOCODE_API_KEY is set', () => {
+      vi.stubEnv('WOOCODE_API_KEY', 'test-key');
       expect(validateAuthMethod(AuthType.USE_GEMINI)).toBeNull();
     });
 
-    it('should return an error message if GEMINI_API_KEY is not set', () => {
-      vi.stubEnv('GEMINI_API_KEY', undefined);
+    it('should return an error message if WOOCODE_API_KEY is not set', () => {
+      vi.stubEnv('WOOCODE_API_KEY', undefined);
       expect(validateAuthMethod(AuthType.USE_GEMINI)).toBe(
-        'GEMINI_API_KEY environment variable not found. Add that to your environment and try again (no reload needed if using .env)!',
+        'WOOCODE_API_KEY environment variable not found. Add that to your environment and try again (no reload needed if using .env)!',
       );
     });
   });

@@ -6,7 +6,7 @@
 
 import type { Message } from '../types.js';
 import { MessageType } from '../types.js';
-import type { Config } from '@google/gemini-cli-core';
+import type { Config } from 'woocode-core';
 import type { LoadedSettings } from '../../config/settings.js';
 
 export function createShowMemoryAction(
@@ -67,8 +67,8 @@ export function createShowMemoryAction(
         type: MessageType.INFO,
         content:
           fileCount > 0
-            ? 'Hierarchical memory (GEMINI.md or other context files) is loaded but content is empty.'
-            : 'No hierarchical memory (GEMINI.md or other context files) is currently loaded.',
+            ? 'Hierarchical memory (WOOCODE.md or other context files) is loaded but content is empty.'
+            : 'No hierarchical memory (WOOCODE.md or other context files) is currently loaded.',
         timestamp: new Date(),
       });
     }

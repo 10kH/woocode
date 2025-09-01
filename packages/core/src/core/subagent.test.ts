@@ -26,7 +26,7 @@ import { createContentGenerator } from './contentGenerator.js';
 import { getEnvironmentContext } from '../utils/environmentContext.js';
 import { executeToolCall } from './nonInteractiveToolExecutor.js';
 import type { ToolRegistry } from '../tools/tool-registry.js';
-import { DEFAULT_GEMINI_MODEL } from '../config/models.js';
+import { DEFAULT_WOOCODE_MODEL } from '../config/models.js';
 import { Type } from '@google/genai';
 import type {
   Content,
@@ -47,7 +47,7 @@ async function createMockConfig(
 ): Promise<{ config: Config; toolRegistry: ToolRegistry }> {
   const configParams: ConfigParameters = {
     sessionId: 'test-session',
-    model: DEFAULT_GEMINI_MODEL,
+    model: DEFAULT_WOOCODE_MODEL,
     targetDir: '.',
     debugMode: false,
     cwd: process.cwd(),

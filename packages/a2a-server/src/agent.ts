@@ -21,8 +21,8 @@ import type {
   ToolCallRequestInfo,
   ServerGeminiToolCallRequestEvent,
   Config,
-} from '@google/gemini-cli-core';
-import { GeminiEventType } from '@google/gemini-cli-core';
+} from 'woocode-core';
+import { GeminiEventType } from 'woocode-core';
 import { v4 as uuidv4 } from 'uuid';
 import { logger } from './logger.js';
 import type { StateChange, AgentSettings } from './types.js';
@@ -163,7 +163,7 @@ class CoderAgentExecutor implements AgentExecutor {
       eventBus,
     );
     runtimeTask.taskState = persistedState._taskState;
-    await runtimeTask.geminiClient.initialize(
+    await runtimeTask.woocodeClient.initialize(
       runtimeTask.config.getContentGeneratorConfig(),
     );
 
@@ -182,7 +182,7 @@ class CoderAgentExecutor implements AgentExecutor {
     const agentSettings = agentSettingsInput || ({} as AgentSettings);
     const config = await this.getConfig(agentSettings, taskId);
     const runtimeTask = await Task.create(taskId, contextId, config, eventBus);
-    await runtimeTask.geminiClient.initialize(
+    await runtimeTask.woocodeClient.initialize(
       runtimeTask.config.getContentGeneratorConfig(),
     );
 

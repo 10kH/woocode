@@ -1,310 +1,416 @@
-# Gemini CLI
+# 🤖 WooCode - Privacy-First AI Coding Assistant
 
-[![Gemini CLI CI](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/npm/v/@google/gemini-cli)](https://www.npmjs.com/package/@google/gemini-cli)
-[![License](https://img.shields.io/github/license/google-gemini/gemini-cli)](https://github.com/google-gemini/gemini-cli/blob/main/LICENSE)
+<div align="center">
+  <img src="docs/assets/logo.png" alt="WooCode Logo" width="200"/>
+  
+  [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+  [![Node Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
+  [![npm Version](https://img.shields.io/npm/v/woocode)](https://www.npmjs.com/package/woocode)
+  
+  **Your code never leaves your machine. Period.**
+</div>
 
-![Gemini CLI Screenshot](./docs/assets/gemini-screenshot.png)
+## 🌟 Why WooCode?
 
-Gemini CLI is an open-source AI agent that brings the power of Gemini directly into your terminal. It provides lightweight access to Gemini, giving you the most direct path from your prompt to our model.
+WooCode is a powerful AI coding assistant that prioritizes your **privacy** and **control**. Unlike cloud-based solutions, WooCode runs entirely on your local GPU by default, ensuring your code stays on your machine. When needed, you can seamlessly switch to cloud APIs.
 
-## 🚀 Why Gemini CLI?
+### Key Features
 
-- **🎯 Free tier**: 60 requests/min and 1,000 requests/day with personal Google account
-- **🧠 Powerful Gemini 2.5 Pro**: Access to 1M token context window
-- **🔧 Built-in tools**: Google Search grounding, file operations, shell commands, web fetching
-- **🔌 Extensible**: MCP (Model Context Protocol) support for custom integrations
-- **💻 Terminal-first**: Designed for developers who live in the command line
-- **🛡️ Open source**: Apache 2.0 licensed
+- 🔒 **Privacy First** - Local GPU inference by default, your code stays private
+- 🚀 **State-of-the-art Models** - Qwen3-Coder, CodeLlama, and more
+- 🔄 **Flexible Providers** - Switch between local (HuggingFace, Ollama) and cloud (OpenAI, Anthropic, Gemini)
+- 🎯 **GPU Auto-Detection** - Automatically recommends the best model for your hardware
+- 📂 **Full Codebase Context** - Understands your entire project structure
+- 🛠️ **Powerful Tools** - File operations, shell commands, web search, and more
+- 🔌 **Extensible** - MCP (Model Context Protocol) support for custom tools
 
 ## 📦 Installation
 
-### Quick Install
-
-#### Run instantly with npx
+### Option 1: NPM (Recommended)
 
 ```bash
-# Using npx (no installation required)
-npx https://github.com/google-gemini/gemini-cli
+# Install globally
+npm install -g woocode
+
+# Run
+woocode
 ```
 
-#### Install globally with npm
+### Option 2: Build from Source
 
 ```bash
-npm install -g @google/gemini-cli
+# Clone the repository
+git clone https://github.com/woody/woocode.git
+cd woocode
+
+# Install dependencies
+npm install
+
+# Build the project
+npm run build
+npm run bundle
+
+# Run
+./bundle/woocode.js
 ```
 
-#### Install globally with Homebrew (macOS/Linux)
+### Option 3: Pre-built Binary
 
 ```bash
-brew install gemini-cli
+# Download the latest release
+wget https://github.com/woody/woocode/releases/latest/download/woocode.js
+
+# Make executable
+chmod +x woocode.js
+
+# Run
+./woocode.js
 ```
 
-#### System Requirements
-
-- Node.js version 20 or higher
-- macOS, Linux, or Windows
-
-## Release Cadence and Tags
-
-See [Releases](./docs/releases.md) for more details.
-
-### Preview
-
-New preview releases will be published each week at UTC 2359 on Tuesdays. These releases will not have been fully vetted and may contain regressions or other outstanding issues. Please help us test and install with `preview` tag.
-
-```bash
-npm install -g @google/gemini-cli@preview
-```
-
-### Stable
-
-- New stable releases will be published each week at UTC 2000 on Tuesdays, this will be the full promotion of last week's `preview` release + any bug fixes and validations. Use `latest` tag.
-
-```bash
-npm install -g @google/gemini-cli@latest
-```
-
-### Nightly
-
-- New releases will be published each week at UTC 0000 each day, This will be all changes from the main branch as represented at time of release. It should be assumed there are pending validations and issues. Use `nightly` tag.
-
-```bash
-npm install -g @google/gemini-cli@nightly
-```
-
-## 📋 Key Features
-
-### Code Understanding & Generation
-
-- Query and edit large codebases
-- Generate new apps from PDFs, images, or sketches using multimodal capabilities
-- Debug issues and troubleshoot with natural language
-
-### Automation & Integration
-
-- Automate operational tasks like querying pull requests or handling complex rebases
-- Use MCP servers to connect new capabilities, including [media generation with Imagen, Veo or Lyria](https://github.com/GoogleCloudPlatform/vertex-ai-creative-studio/tree/main/experiments/mcp-genmedia)
-- Run non-interactively in scripts for workflow automation
-
-### Advanced Capabilities
-
-- Ground your queries with built-in [Google Search](https://ai.google.dev/gemini-api/docs/grounding) for real-time information
-- Conversation checkpointing to save and resume complex sessions
-- Custom context files (GEMINI.md) to tailor behavior for your projects
-
-### GitHub Integration
-
-Integrate Gemini CLI directly into your GitHub workflows with [**Gemini CLI GitHub Action**](https://github.com/google-github-actions/run-gemini-cli):
-
-- **Pull Request Reviews**: Automated code review with contextual feedback and suggestions
-- **Issue Triage**: Automated labeling and prioritization of GitHub issues based on content analysis
-- **On-demand Assistance**: Mention `@gemini-cli` in issues and pull requests for help with debugging, explanations, or task delegation
-- **Custom Workflows**: Build automated, scheduled and on-demand workflows tailored to your team's needs
-
-## 🔐 Authentication Options
-
-Choose the authentication method that best fits your needs:
-
-### Option 1: OAuth login (Using your Google Account)
-
-**✨ Best for:** Individual developers as well as anyone who has a Gemini Code Assist License. (see [quota limits and terms of service](https://cloud.google.com/gemini/docs/quotas) for details)
-
-**Benefits:**
-
-- **Free tier**: 60 requests/min and 1,000 requests/day
-- **Gemini 2.5 Pro** with 1M token context window
-- **No API key management** - just sign in with your Google account
-- **Automatic updates** to latest models
-
-#### Start Gemini CLI, then choose OAuth and follow the browser authentication flow when prompted
-
-```bash
-gemini
-```
-
-#### If you are using a paid Code Assist License from your organization, remember to set the Google Cloud Project
-
-```bash
-# Set your Google Cloud Project
-export GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_NAME"
-gemini
-```
-
-### Option 2: Gemini API Key
-
-**✨ Best for:** Developers who need specific model control or paid tier access
-
-**Benefits:**
-
-- **Free tier**: 100 requests/day with Gemini 2.5 Pro
-- **Model selection**: Choose specific Gemini models
-- **Usage-based billing**: Upgrade for higher limits when needed
-
-```bash
-# Get your key from https://aistudio.google.com/apikey
-export GEMINI_API_KEY="YOUR_API_KEY"
-gemini
-```
-
-### Option 3: Vertex AI
-
-**✨ Best for:** Enterprise teams and production workloads
-
-**Benefits:**
-
-- **Enterprise features**: Advanced security and compliance
-- **Scalable**: Higher rate limits with billing account
-- **Integration**: Works with existing Google Cloud infrastructure
-
-```bash
-# Get your key from Google Cloud Console
-export GOOGLE_API_KEY="YOUR_API_KEY"
-export GOOGLE_GENAI_USE_VERTEXAI=true
-gemini
-```
-
-For Google Workspace accounts and other authentication methods, see the [authentication guide](./docs/cli/authentication.md).
-
-## 🚀 Getting Started
+## 🚀 Quick Start
 
 ### Basic Usage
 
-#### Start in current directory
+```bash
+# Start WooCode in your project directory
+cd your-project
+woocode
+
+# WooCode will:
+# 1. Detect your GPU capabilities
+# 2. Recommend the best local model
+# 3. Auto-download the model (first run only)
+# 4. Start the interactive session
+```
+
+### First Run Example
+
+```
+$ woocode
+Detected GPU: NVIDIA RTX 4090 with 24GB VRAM
+Recommended: Qwen3-Coder 30B (A3B) - Good balance
+Downloading model... [████████████████████] 100%
+Model ready! Starting WooCode...
+
+Welcome to WooCode! How can I help you today?
+
+> Help me understand this codebase
+```
+
+## 🎮 Usage Examples
+
+### Interactive Mode (Default)
 
 ```bash
-gemini
+# Start interactive session
+woocode
+
+# Examples of what you can do:
+> Explain the architecture of this project
+> Find all API endpoints in this codebase
+> Add error handling to the user authentication
+> Write unit tests for the payment module
+> Debug why the login feature is broken
 ```
 
-#### Include multiple directories
+### Non-Interactive Mode
 
 ```bash
-gemini --include-directories ../lib,../docs
+# Single prompt execution
+woocode -p "Generate a README for this project"
+
+# Pipe input
+echo "Explain this error" | woocode -p "Help me fix this:"
+
+# Process files
+cat error.log | woocode -p "Analyze these logs and suggest fixes"
 ```
 
-#### Use specific model
+### Provider Selection
 
 ```bash
-gemini -m gemini-2.5-flash
+# Use local GPU (default)
+woocode
+
+# Use specific local model
+woocode --provider huggingface
+woocode --provider ollama
+
+# Use cloud APIs (requires API keys)
+woocode --provider openai
+woocode --provider anthropic
+woocode --provider gemini
 ```
 
-#### Non-interactive mode for scripts
+## 🔧 Configuration
+
+### Settings File
+
+Create `~/.woocode/settings.json`:
+
+```json
+{
+  "provider": "huggingface",
+  "useProviderSystem": true,
+  "model": {
+    "name": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+    "maxSessionTurns": -1
+  },
+  "apiKeys": {
+    "openai": "sk-...",
+    "anthropic": "sk-ant-...",
+    "gemini": "AI..."
+  },
+  "ui": {
+    "theme": "dark",
+    "showLineNumbers": true
+  },
+  "tools": {
+    "useRipgrep": true,
+    "usePty": false
+  }
+}
+```
+
+### Environment Variables
 
 ```bash
-gemini -p "Explain the architecture of this codebase"
+# Provider selection
+export WOOCODE_PROVIDER=huggingface
+
+# API Keys (optional, for cloud providers)
+export OPENAI_API_KEY="sk-..."
+export ANTHROPIC_API_KEY="sk-ant-..."
+export GEMINI_API_KEY="AI..."
+export WOOCODE_API_KEY="AI..."  # Alternative for Gemini
+
+# Model selection
+export WOOCODE_MODEL="Qwen/Qwen3-Coder-30B-A3B-Instruct"
 ```
 
-### Quick Examples
+## 🤖 Supported Models & Providers
 
-#### Start a new project
+### Local Providers (Privacy-First)
+
+#### HuggingFace Models (Auto-download)
+| Model | VRAM | Description |
+|-------|------|-------------|
+| **Qwen3-Coder 30B (A3B)** | 24GB+ | Best for RTX 4090, A6000 |
+| **Qwen3-Coder 480B (A35B)** | 80GB+ | Enterprise GPUs (A100, H100) |
+| **CodeLlama 34B** | 24GB+ | Meta's code model |
+| **DeepSeek-Coder 33B** | 24GB+ | Excellent for code completion |
+
+#### Ollama Models
+| Model | Size | Command |
+|-------|------|---------|
+| **Llama 3** | 8B | `ollama pull llama3` |
+| **CodeLlama** | 7B-34B | `ollama pull codellama` |
+| **Qwen2.5-Coder** | 7B-32B | `ollama pull qwen2.5-coder` |
+| **DeepSeek-Coder** | 6.7B-33B | `ollama pull deepseek-coder` |
+
+### Cloud Providers (Optional)
+
+#### OpenAI
+- GPT-4 Turbo
+- GPT-3.5 Turbo
+- o1-preview (reasoning model)
+
+#### Anthropic
+- Claude 3 Opus
+- Claude 3.5 Sonnet
+- Claude 3.5 Haiku
+
+#### Google Gemini
+- Gemini 1.5 Pro
+- Gemini 1.5 Flash
+- Gemini 2.0 Flash (Experimental)
+
+## 💻 Commands
+
+### In-Session Commands
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `/help` | Show all available commands | `/help` |
+| `/provider` | Manage LLM providers | `/provider list` |
+| `/provider switch` | Change provider/model | `/provider switch openai gpt-4-turbo` |
+| `/model` | Show current model info | `/model` |
+| `/context` | Manage context files | `/context add src/` |
+| `/memory` | Manage session memory | `/memory save project-analysis` |
+| `/checkpoint` | Create restore point | `/checkpoint create` |
+| `/chat` | Manage conversations | `/chat save debugging-session` |
+| `/settings` | View/edit settings | `/settings edit` |
+| `/clear` | Clear screen | `/clear` |
+| `/exit` | Exit WooCode | `/exit` |
+
+### File Operations
 
 ```bash
-cd new-project/
-gemini
-> Write me a Discord bot that answers questions using a FAQ.md file I will provide
+# Read files
+> Show me the contents of package.json
+
+# Edit files
+> Add error handling to src/api/auth.js
+
+# Create files
+> Create a new React component for user profile
+
+# Search code
+> Find all TODO comments in the codebase
 ```
 
-#### Analyze existing code
+### Shell Commands
 
 ```bash
-git clone https://github.com/google-gemini/gemini-cli
-cd gemini-cli
-gemini
-> Give me a summary of all of the changes that went in yesterday
+# Run commands (requires approval)
+> Run the test suite
+> Install express package
+> Check git status
 ```
 
-## 📚 Documentation
+## 🔒 Privacy & Security
 
-### Getting Started
+### Local-First Architecture
 
-- [**Quickstart Guide**](./docs/cli/index.md) - Get up and running quickly
-- [**Authentication Setup**](./docs/cli/authentication.md) - Detailed auth configuration
-- [**Configuration Guide**](./docs/cli/configuration.md) - Settings and customization
-- [**Keyboard Shortcuts**](./docs/keyboard-shortcuts.md) - Productivity tips
+1. **Default Local Processing**: All AI inference runs on your GPU by default
+2. **No Telemetry**: Unless explicitly enabled, no data is sent anywhere
+3. **Code Never Leaves**: Your source code stays on your machine
+4. **Explicit Cloud Usage**: Cloud APIs only used when you explicitly switch
 
-### Core Features
+### Security Features
 
-- [**Commands Reference**](./docs/cli/commands.md) - All slash commands (`/help`, `/chat`, `/mcp`, etc.)
-- [**Checkpointing**](./docs/checkpointing.md) - Save and resume conversations
-- [**Memory Management**](./docs/tools/memory.md) - Using GEMINI.md context files
-- [**Token Caching**](./docs/cli/token-caching.md) - Optimize token usage
+- **Sandboxed Execution**: Shell commands run in controlled environment
+- **Approval Required**: All file modifications and commands need approval
+- **Folder Trust**: Untrusted folders have restricted operations
+- **No Auto-Upload**: Files are never automatically uploaded anywhere
 
-### Tools & Extensions
+## 🛠️ Advanced Features
 
-- [**Built-in Tools Overview**](./docs/tools/index.md)
-  - [File System Operations](./docs/tools/file-system.md)
-  - [Shell Commands](./docs/tools/shell.md)
-  - [Web Fetch & Search](./docs/tools/web-fetch.md)
-  - [Multi-file Operations](./docs/tools/multi-file.md)
-- [**MCP Server Integration**](./docs/tools/mcp-server.md) - Extend with custom tools
-- [**Custom Extensions**](./docs/extension.md) - Build your own commands
+### GPU Detection & Optimization
 
-### Advanced Topics
+WooCode automatically detects your GPU and recommends the best model:
 
-- [**Architecture Overview**](./docs/architecture.md) - How Gemini CLI works
-- [**IDE Integration**](./docs/ide-integration.md) - VS Code companion
-- [**Sandboxing & Security**](./docs/sandbox.md) - Safe execution environments
-- [**Enterprise Deployment**](./docs/deployment.md) - Docker, system-wide config
-- [**Telemetry & Monitoring**](./docs/telemetry.md) - Usage tracking
-- [**Tools API Development**](./docs/core/tools-api.md) - Create custom tools
-
-### Configuration & Customization
-
-- [**Settings Reference**](./docs/cli/configuration.md) - All configuration options
-- [**Theme Customization**](./docs/cli/themes.md) - Visual customization
-- [**.gemini Directory**](./docs/gemini-ignore.md) - Project-specific settings
-- [**Environment Variables**](./docs/cli/configuration.md#environment-variables)
-
-### Troubleshooting & Support
-
-- [**Troubleshooting Guide**](./docs/troubleshooting.md) - Common issues and solutions
-- [**FAQ**](./docs/troubleshooting.md#frequently-asked-questions) - Quick answers
-- Use `/bug` command to report issues directly from the CLI
-
-### Using MCP Servers
-
-Configure MCP servers in `~/.gemini/settings.json` to extend Gemini CLI with custom tools:
-
-```text
-> @github List my open pull requests
-> @slack Send a summary of today's commits to #dev channel
-> @database Run a query to find inactive users
+```
+Detected: NVIDIA RTX 4090 (24GB VRAM)
+✓ Can run: Qwen3-Coder-30B (Recommended)
+✓ Can run: CodeLlama-34B
+✗ Cannot run: Qwen3-Coder-480B (Requires 80GB+)
 ```
 
-See the [MCP Server Integration guide](./docs/tools/mcp-server.md) for setup instructions.
+### Model Context Protocol (MCP)
+
+Extend WooCode with custom tools:
+
+```json
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["@woocode/mcp-github", "--token", "$GITHUB_TOKEN"]
+    },
+    "database": {
+      "command": "python",
+      "args": ["mcp_server.py"]
+    }
+  }
+}
+```
+
+### Checkpoint & Recovery
+
+```bash
+# Create checkpoint before major changes
+> /checkpoint create "before-refactoring"
+
+# List checkpoints
+> /checkpoint list
+
+# Restore if needed
+> /checkpoint restore "before-refactoring"
+```
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+#### GPU Not Detected
+```bash
+# Check CUDA installation
+nvidia-smi
+
+# For AMD GPUs
+rocm-smi
+
+# For Apple Silicon
+system_profiler SPDisplaysDataType
+```
+
+#### Model Download Issues
+```bash
+# Clear cache and retry
+rm -rf ~/.cache/huggingface
+woocode --debug
+```
+
+#### Out of Memory
+```bash
+# Use smaller model
+woocode --model Qwen/Qwen3-Coder-7B
+
+# Or use CPU (slower)
+export CUDA_VISIBLE_DEVICES=""
+woocode
+```
 
 ## 🤝 Contributing
 
-We welcome contributions! Gemini CLI is fully open source (Apache 2.0), and we encourage the community to:
+We welcome contributions! WooCode is fully open source (Apache 2.0).
 
-- Report bugs and suggest features
-- Improve documentation
-- Submit code improvements
-- Share your MCP servers and extensions
+```bash
+# Fork and clone
+git clone https://github.com/YOUR_USERNAME/woocode.git
 
-See our [Contributing Guide](./CONTRIBUTING.md) for development setup, coding standards, and how to submit pull requests.
+# Create feature branch
+git checkout -b feature/amazing-feature
 
-Check our [Official Roadmap](https://github.com/orgs/google-gemini/projects/11/) for planned features and priorities.
+# Make changes and test
+npm test
 
-## 📖 Resources
+# Submit PR
+git push origin feature/amazing-feature
+```
 
-- **[Official Roadmap](./ROADMAP.md)** - See what's coming next
-- **[NPM Package](https://www.npmjs.com/package/@google/gemini-cli)** - Package registry
-- **[GitHub Issues](https://github.com/google-gemini/gemini-cli/issues)** - Report bugs or request features
-- **[Security Advisories](https://github.com/google-gemini/gemini-cli/security/advisories)** - Security updates
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
-### Uninstall
+## 📚 Documentation
 
-See the [Uninstall Guide](docs/Uninstall.md) for removal instructions.
+- [Installation Guide](docs/installation.md)
+- [Configuration Guide](docs/configuration.md)
+- [Provider Setup](docs/providers.md)
+- [MCP Integration](docs/mcp.md)
+- [API Reference](docs/api.md)
+- [Troubleshooting](docs/troubleshooting.md)
 
-## 📄 Legal
+## 📄 License
 
-- **License**: [Apache License 2.0](LICENSE)
-- **Terms of Service**: [Terms & Privacy](./docs/tos-privacy.md)
+Apache License 2.0 - see [LICENSE](LICENSE) file.
+
+## 🙏 Acknowledgments
+
+- Built on top of Google's Gemini CLI architecture
+- Powered by amazing open-source models from Qwen, Meta, and others
+- Thanks to the Ollama, HuggingFace, and MCP communities
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/woody/woocode/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/woody/woocode/discussions)
 - **Security**: [Security Policy](SECURITY.md)
 
 ---
 
-<p align="center">
-  Built with ❤️ by Google and the open source community
-</p>
+<div align="center">
+  <b>WooCode - Your Code, Your Control, Your AI</b>
+  <br>
+  Made with ❤️ by the WooCode Community
+</div>

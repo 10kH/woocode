@@ -14,7 +14,7 @@ import {
   MCPServerStatus,
   isNodeError,
   parseAndFormatApiError,
-} from '@google/gemini-cli-core';
+} from 'woocode-core';
 import type {
   ToolConfirmationPayload,
   CompletedToolCall,
@@ -25,7 +25,7 @@ import type {
   ToolCallConfirmationDetails,
   Config,
   UserTierId,
-} from '@google/gemini-cli-core';
+} from 'woocode-core';
 import type { RequestContext } from '@a2a-js/sdk/server';
 import { type ExecutionEventBus } from '@a2a-js/sdk/server';
 import type {
@@ -57,7 +57,7 @@ export class Task {
   contextId: string;
   scheduler: CoreToolScheduler;
   config: Config;
-  geminiClient: GeminiClient;
+  woocodeClient: GeminiClient;
   pendingToolConfirmationDetails: Map<string, ToolCallConfirmationDetails>;
   taskState: TaskState;
   eventBus?: ExecutionEventBus;
@@ -82,7 +82,7 @@ export class Task {
     this.contextId = contextId;
     this.config = config;
     this.scheduler = this.createScheduler();
-    this.geminiClient = new GeminiClient(this.config);
+    this.woocodeClient = new GeminiClient(this.config);
     this.pendingToolConfirmationDetails = new Map();
     this.taskState = 'submitted';
     this.eventBus = eventBus;
@@ -90,7 +90,7 @@ export class Task {
     this._resetToolCompletionPromise();
     this.config.setFlashFallbackHandler(
       async (currentModel: string, fallbackModel: string): Promise<boolean> => {
-        config.setModel(fallbackModel); // gemini-cli-core sets to DEFAULT_GEMINI_FLASH_MODEL
+        config.setModel(fallbackModel); // gemini-cli-core sets to DEFAULT_WOOCODE_FLASH_MODEL
         // Switch model for future use but return false to stop current retry
         return false;
       },
@@ -227,7 +227,7 @@ export class Task {
     } = {
       coderAgent: coderAgentMessage,
       model: this.config.getModel(),
-      userTier: this.geminiClient.getUserTier(),
+      userTier: this.woocodeClient.getUserTier(),
     };
 
     if (metadataError) {
@@ -775,7 +775,7 @@ export class Task {
       } else {
         parts = [response];
       }
-      this.geminiClient.addHistory({
+      this.woocodeClient.addHistory({
         role: 'user',
         parts,
       });
@@ -814,7 +814,7 @@ export class Task {
     // Set task state to working as we are about to call LLM
     this.setTaskStateAndPublishUpdate('working', stateChange);
     // TODO: Determine what it mean to have, then add a prompt ID.
-    yield* this.geminiClient.sendMessageStream(
+    yield* this.woocodeClient.sendMessageStream(
       llmParts,
       aborted,
       /*prompt_id*/ '',
@@ -854,7 +854,7 @@ export class Task {
       // Set task state to working as we are about to call LLM
       this.setTaskStateAndPublishUpdate('working', stateChange);
       // TODO: Determine what it mean to have, then add a prompt ID.
-      yield* this.geminiClient.sendMessageStream(
+      yield* this.woocodeClient.sendMessageStream(
         llmParts,
         aborted,
         /*prompt_id*/ '',

@@ -24,18 +24,18 @@ import type {
   Status as ToolCallStatusType,
   AnyDeclarativeTool,
   AnyToolInvocation,
-} from '@google/gemini-cli-core';
+} from 'woocode-core';
 import {
   ToolConfirmationOutcome,
   ApprovalMode,
   MockTool,
-} from '@google/gemini-cli-core';
+} from 'woocode-core';
 import type { HistoryItemWithoutId, HistoryItemToolGroup } from '../types.js';
 import { ToolCallStatus } from '../types.js';
 
 // Mocks
-vi.mock('@google/gemini-cli-core', async () => {
-  const actual = await vi.importActual('@google/gemini-cli-core');
+vi.mock('woocode-core', async () => {
+  const actual = await vi.importActual('woocode-core');
   return {
     ...actual,
     ToolRegistry: vi.fn(),

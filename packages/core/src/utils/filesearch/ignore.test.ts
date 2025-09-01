@@ -6,7 +6,7 @@
 
 import { describe, it, expect, afterEach } from 'vitest';
 import { Ignore, loadIgnoreRules } from './ignore.js';
-import { createTmpDir, cleanupTmpDir } from '@google/gemini-cli-test-utils';
+import { createTmpDir, cleanupTmpDir } from 'woocode-test-utils';
 
 describe('Ignore', () => {
   describe('getDirectoryFilter', () => {
@@ -81,7 +81,7 @@ describe('loadIgnoreRules', () => {
     const ignore = loadIgnoreRules({
       projectRoot: tmpDir,
       useGitignore: true,
-      useGeminiignore: false,
+      useWoocodeIgnore: false,
       ignoreDirs: [],
     });
     const fileFilter = ignore.getFileFilter();
@@ -89,14 +89,14 @@ describe('loadIgnoreRules', () => {
     expect(fileFilter('test.txt')).toBe(false);
   });
 
-  it('should load rules from .geminiignore', async () => {
+  it('should load rules from .woocodeignore', async () => {
     tmpDir = await createTmpDir({
-      '.geminiignore': '*.log',
+      '.woocodeignore': '*.log',
     });
     const ignore = loadIgnoreRules({
       projectRoot: tmpDir,
       useGitignore: false,
-      useGeminiignore: true,
+      useWoocodeIgnore: true,
       ignoreDirs: [],
     });
     const fileFilter = ignore.getFileFilter();
@@ -104,15 +104,15 @@ describe('loadIgnoreRules', () => {
     expect(fileFilter('test.txt')).toBe(false);
   });
 
-  it('should combine rules from .gitignore and .geminiignore', async () => {
+  it('should combine rules from .gitignore and .woocodeignore', async () => {
     tmpDir = await createTmpDir({
       '.gitignore': '*.log',
-      '.geminiignore': '*.txt',
+      '.woocodeignore': '*.txt',
     });
     const ignore = loadIgnoreRules({
       projectRoot: tmpDir,
       useGitignore: true,
-      useGeminiignore: true,
+      useWoocodeIgnore: true,
       ignoreDirs: [],
     });
     const fileFilter = ignore.getFileFilter();
@@ -126,7 +126,7 @@ describe('loadIgnoreRules', () => {
     const ignore = loadIgnoreRules({
       projectRoot: tmpDir,
       useGitignore: false,
-      useGeminiignore: false,
+      useWoocodeIgnore: false,
       ignoreDirs: ['logs/'],
     });
     const dirFilter = ignore.getDirectoryFilter();
@@ -139,7 +139,7 @@ describe('loadIgnoreRules', () => {
     const ignore = loadIgnoreRules({
       projectRoot: tmpDir,
       useGitignore: true,
-      useGeminiignore: true,
+      useWoocodeIgnore: true,
       ignoreDirs: [],
     });
     const fileFilter = ignore.getFileFilter();
@@ -151,7 +151,7 @@ describe('loadIgnoreRules', () => {
     const ignore = loadIgnoreRules({
       projectRoot: tmpDir,
       useGitignore: false,
-      useGeminiignore: false,
+      useWoocodeIgnore: false,
       ignoreDirs: [],
     });
     const dirFilter = ignore.getDirectoryFilter();

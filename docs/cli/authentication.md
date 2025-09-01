@@ -28,17 +28,17 @@ The Gemini CLI requires you to authenticate with Google's AI services. On initia
 
 2.  **<a id="gemini-api-key"></a>Gemini API key:**
     - Obtain your API key from Google AI Studio: [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
-    - Set the `GEMINI_API_KEY` environment variable. In the following methods, replace `YOUR_GEMINI_API_KEY` with the API key you obtained from Google AI Studio:
+    - Set the `WOOCODE_API_KEY` environment variable. In the following methods, replace `YOUR_WOOCODE_API_KEY` with the API key you obtained from Google AI Studio:
       - You can temporarily set the environment variable in your current shell session using the following command:
         ```bash
-        export GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
+        export WOOCODE_API_KEY="YOUR_WOOCODE_API_KEY"
         ```
       - For repeated use, you can add the environment variable to your [.env file](#persisting-environment-variables-with-env-files).
 
       - Alternatively you can export the API key from your shell's configuration file (like `~/.bashrc`, `~/.zshrc`, or `~/.profile`). For example, the following command adds the environment variable to a `~/.bashrc` file:
 
         ```bash
-        echo 'export GEMINI_API_KEY="YOUR_GEMINI_API_KEY"' >> ~/.bashrc
+        echo 'export WOOCODE_API_KEY="YOUR_WOOCODE_API_KEY"' >> ~/.bashrc
         source ~/.bashrc
         ```
 
@@ -67,10 +67,10 @@ The Gemini CLI requires you to authenticate with Google's AI services. On initia
     - **Application Default Credentials (ADC):**
 
       > **Note:**
-      > If you have previously set the `GOOGLE_API_KEY` or `GEMINI_API_KEY` environment variables, you must unset them to use Application Default Credentials.
+      > If you have previously set the `GOOGLE_API_KEY` or `WOOCODE_API_KEY` environment variables, you must unset them to use Application Default Credentials.
       >
       > ```bash
-      > unset GOOGLE_API_KEY GEMINI_API_KEY
+      > unset GOOGLE_API_KEY WOOCODE_API_KEY
       > ```
       - **Using `gcloud` (for local development):**
         - Ensure you have a Google Cloud project and have enabled the Vertex AI API.
@@ -117,17 +117,17 @@ The Gemini CLI requires you to authenticate with Google's AI services. On initia
 
 ### Persisting Environment Variables with `.env` Files
 
-You can create a **`.gemini/.env`** file in your project directory or in your home directory. Creating a plain **`.env`** file also works, but `.gemini/.env` is recommended to keep Gemini variables isolated from other tools.
+You can create a **`.woocode/.env`** file in your project directory or in your home directory. Creating a plain **`.env`** file also works, but `.woocode/.env` is recommended to keep Gemini variables isolated from other tools.
 
-**Important:** Some environment variables (like `DEBUG` and `DEBUG_MODE`) are automatically excluded from project `.env` files to prevent interference with gemini-cli behavior. Use `.gemini/.env` files for gemini-cli specific variables.
+**Important:** Some environment variables (like `DEBUG` and `DEBUG_MODE`) are automatically excluded from project `.env` files to prevent interference with gemini-cli behavior. Use `.woocode/.env` files for gemini-cli specific variables.
 
 Gemini CLI automatically loads environment variables from the **first** `.env` file it finds, using the following search order:
 
 1. Starting in the **current directory** and moving upward toward `/`, for each directory it checks:
-   1. `.gemini/.env`
+   1. `.woocode/.env`
    2. `.env`
 2. If no file is found, it falls back to your **home directory**:
-   - `~/.gemini/.env`
+   - `~/.woocode/.env`
    - `~/.env`
 
 > **Important:** The search stops at the **first** file encountered—variables are **not merged** across multiple files.
@@ -137,17 +137,17 @@ Gemini CLI automatically loads environment variables from the **first** `.env` f
 **Project-specific overrides** (take precedence when you are inside the project):
 
 ```bash
-mkdir -p .gemini
-echo 'GOOGLE_CLOUD_PROJECT="your-project-id"' >> .gemini/.env
+mkdir -p .woocode
+echo 'GOOGLE_CLOUD_PROJECT="your-project-id"' >> .woocode/.env
 ```
 
 **User-wide settings** (available in every directory):
 
 ```bash
-mkdir -p ~/.gemini
-cat >> ~/.gemini/.env <<'EOF'
+mkdir -p ~/.woocode
+cat >> ~/.woocode/.env <<'EOF'
 GOOGLE_CLOUD_PROJECT="your-project-id"
-GEMINI_API_KEY="your-gemini-api-key"
+WOOCODE_API_KEY="your-gemini-api-key"
 EOF
 ```
 
@@ -160,7 +160,7 @@ The CLI will automatically detect if it is running in a non-interactive terminal
 following authentication methods if available:
 
 1.  **Gemini API Key:**
-    - Set the `GEMINI_API_KEY` environment variable.
+    - Set the `WOOCODE_API_KEY` environment variable.
     - The CLI will use this key to authenticate with the Gemini API.
 
 2.  **Vertex AI:**

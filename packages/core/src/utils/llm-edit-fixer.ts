@@ -7,7 +7,7 @@
 import { type Content, Type } from '@google/genai';
 import { type GeminiClient } from '../core/client.js';
 import { LruCache } from './LruCache.js';
-import { DEFAULT_GEMINI_FLASH_MODEL } from '../config/models.js';
+import { DEFAULT_WOOCODE_FLASH_MODEL } from '../config/models.js';
 
 const MAX_CACHE_SIZE = 50;
 
@@ -133,7 +133,7 @@ ${userPrompt}`,
     contents,
     SearchReplaceEditSchema,
     abortSignal,
-    DEFAULT_GEMINI_FLASH_MODEL,
+    DEFAULT_WOOCODE_FLASH_MODEL,
   )) as unknown as SearchReplaceEdit;
 
   editCorrectionWithInstructionCache.set(cacheKey, result);

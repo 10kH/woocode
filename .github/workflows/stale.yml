@@ -10,7 +10,7 @@ jobs:
   stale:
     runs-on: 'ubuntu-latest'
     if: |-
-      ${{ github.repository == 'google-gemini/gemini-cli' }}
+      ${{ github.repository == 'woocode/woocode' }}
     permissions:
       issues: 'write'
       pull-requests: 'write'

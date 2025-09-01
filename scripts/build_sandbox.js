@@ -81,7 +81,7 @@ const customDockerfile = argv.f;
 
 if (!baseImage?.length) {
   console.warn(
-    'No default image tag specified in gemini-cli/packages/cli/package.json',
+    'No default image tag specified in woocode/packages/cli/package.json',
   );
 }
 
@@ -90,23 +90,23 @@ if (!argv.s) {
   execSync('npm run build --workspaces', { stdio: 'inherit' });
 }
 
-console.log('packing @google/gemini-cli ...');
+console.log('packing woocode ...');
 const cliPackageDir = join('packages', 'cli');
-rmSync(join(cliPackageDir, 'dist', 'google-gemini-cli-*.tgz'), { force: true });
+rmSync(join(cliPackageDir, 'dist', 'woocode-*.tgz'), { force: true });
 execSync(
-  `npm pack -w @google/gemini-cli --pack-destination ./packages/cli/dist`,
+  `npm pack -w woocode --pack-destination ./packages/cli/dist`,
   {
     stdio: 'ignore',
   },
 );
 
-console.log('packing @google/gemini-cli-core ...');
+console.log('packing woocode-core ...');
 const corePackageDir = join('packages', 'core');
-rmSync(join(corePackageDir, 'dist', 'google-gemini-cli-core-*.tgz'), {
+rmSync(join(corePackageDir, 'dist', 'woocode-core-*.tgz'), {
   force: true,
 });
 execSync(
-  `npm pack -w @google/gemini-cli-core --pack-destination ./packages/core/dist`,
+  `npm pack -w woocode-core --pack-destination ./packages/core/dist`,
   { stdio: 'ignore' },
 );
 
@@ -115,11 +115,11 @@ const packageVersion = JSON.parse(
 ).version;
 
 chmodSync(
-  join(cliPackageDir, 'dist', `google-gemini-cli-${packageVersion}.tgz`),
+  join(cliPackageDir, 'dist', `woocode-${packageVersion}.tgz`),
   0o755,
 );
 chmodSync(
-  join(corePackageDir, 'dist', `google-gemini-cli-core-${packageVersion}.tgz`),
+  join(corePackageDir, 'dist', `woocode-core-${packageVersion}.tgz`),
   0o755,
 );
 
@@ -153,7 +153,7 @@ function buildImage(imageName, dockerfile) {
   ).version;
 
   const imageTag =
-    process.env.GEMINI_SANDBOX_IMAGE_TAG || imageName.split(':')[1];
+    process.env.WOOCODE_SANDBOX_IMAGE_TAG || imageName.split(':')[1];
   const finalImageName = `${imageName.split(':')[0]}:${imageTag}`;
 
   try {

@@ -11,7 +11,7 @@ import * as path from 'node:path';
 import { restoreCommand } from './restoreCommand.js';
 import { type CommandContext } from './types.js';
 import { createMockCommandContext } from '../../test-utils/mockCommandContext.js';
-import type { Config, GitService } from '@google/gemini-cli-core';
+import type { Config, GitService } from 'woocode-core';
 
 describe('restoreCommand', () => {
   let mockContext: CommandContext;
@@ -26,7 +26,7 @@ describe('restoreCommand', () => {
     testRootDir = await fs.mkdtemp(
       path.join(os.tmpdir(), 'restore-command-test-'),
     );
-    geminiTempDir = path.join(testRootDir, '.gemini');
+    geminiTempDir = path.join(testRootDir, '.woocode');
     checkpointsDir = path.join(geminiTempDir, 'checkpoints');
     // The command itself creates this, but for tests it's easier to have it ready.
     // Some tests might remove it to test error paths.
@@ -89,7 +89,7 @@ describe('restoreCommand', () => {
       ).toEqual({
         type: 'message',
         messageType: 'error',
-        content: 'Could not determine the .gemini directory path.',
+        content: 'Could not determine the .woocode directory path.',
       });
     });
 

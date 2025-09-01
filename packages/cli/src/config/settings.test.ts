@@ -60,7 +60,7 @@ import {
   type Settings,
   loadEnvironment,
 } from './settings.js';
-import { GEMINI_DIR } from '@google/gemini-cli-core';
+import { WOOCODE_DIR } from 'woocode-core';
 
 const MOCK_WORKSPACE_DIR = '/mock/workspace';
 // Use the (mocked) SETTINGS_DIRECTORY_NAME for consistency
@@ -1801,16 +1801,16 @@ describe('Settings Loading and Merging', () => {
       delete process.env['TEST_PORT'];
     });
 
-    describe('when GEMINI_CLI_SYSTEM_SETTINGS_PATH is set', () => {
+    describe('when WOOCODE_CLI_SYSTEM_SETTINGS_PATH is set', () => {
       const MOCK_ENV_SYSTEM_SETTINGS_PATH = '/mock/env/system/settings.json';
 
       beforeEach(() => {
-        process.env['GEMINI_CLI_SYSTEM_SETTINGS_PATH'] =
+        process.env['WOOCODE_CLI_SYSTEM_SETTINGS_PATH'] =
           MOCK_ENV_SYSTEM_SETTINGS_PATH;
       });
 
       afterEach(() => {
-        delete process.env['GEMINI_CLI_SYSTEM_SETTINGS_PATH'];
+        delete process.env['WOOCODE_CLI_SYSTEM_SETTINGS_PATH'];
       });
 
       it('should load system settings from the path specified in the environment variable', () => {
@@ -1907,7 +1907,7 @@ describe('Settings Loading and Merging', () => {
       (fs.readFileSync as Mock).mockImplementation(
         (p: fs.PathOrFileDescriptor) => {
           if (p === '/mock/project/.env') {
-            return 'DEBUG=true\nDEBUG_MODE=1\nGEMINI_API_KEY=test-key';
+            return 'DEBUG=true\nDEBUG_MODE=1\nWOOCODE_API_KEY=test-key';
           }
           if (p === MOCK_WORKSPACE_SETTINGS_PATH) {
             return JSON.stringify(workspaceSettingsContent);
@@ -2402,7 +2402,7 @@ describe('Settings Loading and Merging', () => {
       isWorkspaceTrustedValue = true,
     }) {
       delete process.env['TESTTEST']; // reset
-      const geminiEnvPath = path.resolve(path.join(GEMINI_DIR, '.env'));
+      const geminiEnvPath = path.resolve(path.join(WOOCODE_DIR, '.env'));
 
       vi.mocked(isWorkspaceTrusted).mockReturnValue(isWorkspaceTrustedValue);
       (mockFsExistsSync as Mock).mockImplementation((p: fs.PathLike) =>

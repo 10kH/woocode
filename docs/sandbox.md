@@ -50,7 +50,7 @@ Cross-platform sandboxing with complete process isolation.
 gemini -s -p "analyze the code structure"
 
 # Use environment variable
-export GEMINI_SANDBOX=true
+export WOOCODE_SANDBOX=true
 gemini -p "run the test suite"
 
 # Configure in settings.json
@@ -66,7 +66,7 @@ gemini -p "run the test suite"
 ### Enable sandboxing (in order of precedence)
 
 1. **Command flag**: `-s` or `--sandbox`
-2. **Environment variable**: `GEMINI_SANDBOX=true|docker|podman|sandbox-exec`
+2. **Environment variable**: `WOOCODE_SANDBOX=true|docker|podman|sandbox-exec`
 3. **Settings file**: `"sandbox": true` in the `tools` object of your `settings.json` file (e.g., `{"tools": {"sandbox": true}}`).
 
 ### macOS Seatbelt profiles
@@ -131,7 +131,7 @@ export SANDBOX_SET_UID_GID=false  # Disable UID/GID mapping
 DEBUG=1 gemini -s -p "debug command"
 ```
 
-**Note:** If you have `DEBUG=true` in a project's `.env` file, it won't affect gemini-cli due to automatic exclusion. Use `.gemini/.env` files for gemini-cli specific debug settings.
+**Note:** If you have `DEBUG=true` in a project's `.env` file, it won't affect gemini-cli due to automatic exclusion. Use `.woocode/.env` files for gemini-cli specific debug settings.
 
 ### Inspect sandbox
 

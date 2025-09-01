@@ -32,10 +32,10 @@ const argv = yargs(hideBin(process.argv)).option('q', {
   default: false,
 }).argv;
 
-let geminiSandbox = process.env.GEMINI_SANDBOX;
+let geminiSandbox = process.env.WOOCODE_SANDBOX;
 
 if (!geminiSandbox) {
-  const userSettingsFile = join(os.homedir(), '.gemini', 'settings.json');
+  const userSettingsFile = join(os.homedir(), '.woocode', 'settings.json');
   if (existsSync(userSettingsFile)) {
     const settings = JSON.parse(
       stripJsonComments(readFileSync(userSettingsFile, 'utf-8')),
@@ -49,7 +49,7 @@ if (!geminiSandbox) {
 if (!geminiSandbox) {
   let currentDir = process.cwd();
   while (true) {
-    const geminiEnv = join(currentDir, '.gemini', '.env');
+    const geminiEnv = join(currentDir, '.woocode', '.env');
     const regularEnv = join(currentDir, '.env');
     if (existsSync(geminiEnv)) {
       dotenv.config({ path: geminiEnv, quiet: true });
@@ -64,7 +64,7 @@ if (!geminiSandbox) {
     }
     currentDir = parentDir;
   }
-  geminiSandbox = process.env.GEMINI_SANDBOX;
+  geminiSandbox = process.env.WOOCODE_SANDBOX;
 }
 
 geminiSandbox = (geminiSandbox || '').toLowerCase();
@@ -95,7 +95,7 @@ if (['1', 'true'].includes(geminiSandbox)) {
     command = 'podman';
   } else {
     console.error(
-      'ERROR: install docker or podman or specify command in GEMINI_SANDBOX',
+      'ERROR: install docker or podman or specify command in WOOCODE_SANDBOX',
     );
     process.exit(1);
   }
@@ -104,7 +104,7 @@ if (['1', 'true'].includes(geminiSandbox)) {
     command = geminiSandbox;
   } else {
     console.error(
-      `ERROR: missing sandbox command '${geminiSandbox}' (from GEMINI_SANDBOX)`,
+      `ERROR: missing sandbox command '${geminiSandbox}' (from WOOCODE_SANDBOX)`,
     );
     process.exit(1);
   }

@@ -28,29 +28,29 @@ import type { Content } from '@google/genai';
 import crypto from 'node:crypto';
 import os from 'node:os';
 
-const GEMINI_DIR_NAME = '.gemini';
+const WOOCODE_DIR_NAME = '.woocode';
 const TMP_DIR_NAME = 'tmp';
 const LOG_FILE_NAME = 'logs.json';
 const CHECKPOINT_FILE_NAME = 'checkpoint.json';
 
 const projectDir = process.cwd();
 const hash = crypto.createHash('sha256').update(projectDir).digest('hex');
-const TEST_GEMINI_DIR = path.join(
+const TEST_WOOCODE_DIR = path.join(
   os.homedir(),
-  GEMINI_DIR_NAME,
+  WOOCODE_DIR_NAME,
   TMP_DIR_NAME,
   hash,
 );
 
-const TEST_LOG_FILE_PATH = path.join(TEST_GEMINI_DIR, LOG_FILE_NAME);
+const TEST_LOG_FILE_PATH = path.join(TEST_WOOCODE_DIR, LOG_FILE_NAME);
 const TEST_CHECKPOINT_FILE_PATH = path.join(
-  TEST_GEMINI_DIR,
+  TEST_WOOCODE_DIR,
   CHECKPOINT_FILE_NAME,
 );
 
 async function cleanupLogAndCheckpointFiles() {
   try {
-    await fs.rm(TEST_GEMINI_DIR, { recursive: true, force: true });
+    await fs.rm(TEST_WOOCODE_DIR, { recursive: true, force: true });
   } catch (_error) {
     // Ignore errors, as the directory may not exist, which is fine.
   }
@@ -83,7 +83,7 @@ describe('Logger', () => {
     // Clean up before the test
     await cleanupLogAndCheckpointFiles();
     // Ensure the directory exists for the test
-    await fs.mkdir(TEST_GEMINI_DIR, { recursive: true });
+    await fs.mkdir(TEST_WOOCODE_DIR, { recursive: true });
     logger = new Logger(testSessionId, new Storage(process.cwd()));
     await logger.initialize();
   });
@@ -104,9 +104,9 @@ describe('Logger', () => {
   });
 
   describe('initialize', () => {
-    it('should create .gemini directory and an empty log file if none exist', async () => {
+    it('should create .woocode directory and an empty log file if none exist', async () => {
       const dirExists = await fs
-        .access(TEST_GEMINI_DIR)
+        .access(TEST_WOOCODE_DIR)
         .then(() => true)
         .catch(() => false);
       expect(dirExists).toBe(true);
@@ -209,7 +209,7 @@ describe('Logger', () => {
       );
       const logContent = await readLogFile();
       expect(logContent).toEqual([]);
-      const dirContents = await fs.readdir(TEST_GEMINI_DIR);
+      const dirContents = await fs.readdir(TEST_WOOCODE_DIR);
       expect(
         dirContents.some(
           (f) =>
@@ -236,7 +236,7 @@ describe('Logger', () => {
       );
       const logContent = await readLogFile();
       expect(logContent).toEqual([]);
-      const dirContents = await fs.readdir(TEST_GEMINI_DIR);
+      const dirContents = await fs.readdir(TEST_WOOCODE_DIR);
       expect(
         dirContents.some(
           (f) =>
@@ -439,7 +439,7 @@ describe('Logger', () => {
     ])('should save a checkpoint', async ({ tag, encodedTag }) => {
       await logger.saveCheckpoint(conversation, tag);
       const taggedFilePath = path.join(
-        TEST_GEMINI_DIR,
+        TEST_WOOCODE_DIR,
         `checkpoint-${encodedTag}.json`,
       );
       const fileContent = await fs.readFile(taggedFilePath, 'utf-8');
@@ -502,7 +502,7 @@ describe('Logger', () => {
         { role: 'user', parts: [{ text: 'hello' }] },
       ];
       const taggedFilePath = path.join(
-        TEST_GEMINI_DIR,
+        TEST_WOOCODE_DIR,
         `checkpoint-${encodedTag}.json`,
       );
       await fs.writeFile(
@@ -531,7 +531,7 @@ describe('Logger', () => {
       const tag = 'invalid-json-tag';
       const encodedTag = 'invalid-json-tag';
       const taggedFilePath = path.join(
-        TEST_GEMINI_DIR,
+        TEST_WOOCODE_DIR,
         `checkpoint-${encodedTag}.json`,
       );
       await fs.writeFile(taggedFilePath, 'invalid json');
@@ -573,7 +573,7 @@ describe('Logger', () => {
 
     beforeEach(async () => {
       taggedFilePath = path.join(
-        TEST_GEMINI_DIR,
+        TEST_WOOCODE_DIR,
         `checkpoint-${encodedTag}.json`,
       );
       // Create a file to be deleted
@@ -591,7 +591,7 @@ describe('Logger', () => {
     it('should delete both new and old checkpoint files if they exist', async () => {
       const oldTag = 'delete-me(old)';
       const oldStylePath = path.join(
-        TEST_GEMINI_DIR,
+        TEST_WOOCODE_DIR,
         `checkpoint-${oldTag}.json`,
       );
       const newStylePath = logger['_checkpointPath'](oldTag);
@@ -662,7 +662,7 @@ describe('Logger', () => {
 
     beforeEach(() => {
       taggedFilePath = path.join(
-        TEST_GEMINI_DIR,
+        TEST_WOOCODE_DIR,
         `checkpoint-${encodedTag}.json`,
       );
     });
@@ -722,7 +722,7 @@ describe('Logger', () => {
       ];
       const tag = 'special(char)';
       const taggedFilePath = path.join(
-        TEST_GEMINI_DIR,
+        TEST_WOOCODE_DIR,
         `checkpoint-${tag}.json`,
       );
       await fs.writeFile(

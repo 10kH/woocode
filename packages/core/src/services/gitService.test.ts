@@ -11,7 +11,7 @@ import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
 import * as os from 'node:os';
 import type { ChildProcess } from 'node:child_process';
-import { getProjectHash, GEMINI_DIR } from '../utils/paths.js';
+import { getProjectHash, WOOCODE_DIR } from '../utils/paths.js';
 
 const hoistedMockExec = vi.hoisted(() => vi.fn());
 vi.mock('node:child_process', () => ({
@@ -160,7 +160,7 @@ describe('GitService', () => {
     let gitConfigPath: string;
 
     beforeEach(() => {
-      repoDir = path.join(homedir, GEMINI_DIR, 'history', hash);
+      repoDir = path.join(homedir, WOOCODE_DIR, 'history', hash);
       gitConfigPath = path.join(repoDir, '.gitconfig');
     });
 

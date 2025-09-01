@@ -1,13 +1,13 @@
 {
-  "name": "gemini-cli-vscode-ide-companion",
-  "displayName": "Gemini CLI Companion",
-  "description": "Enable Gemini CLI with direct access to your IDE workspace.",
+  "name": "woocode-vscode-ide-companion",
+  "displayName": "WooCode Companion",
+  "description": "Enable WooCode with direct access to your IDE workspace.",
   "version": "0.2.2",
   "publisher": "google",
   "icon": "assets/icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/google-gemini/gemini-cli.git",
+    "url": "https://github.com/woocode/woocode.git",
     "directory": "packages/vscode-ide-companion"
   },
   "engines": {
@@ -19,10 +19,9 @@
     "AI"
   ],
   "keywords": [
-    "gemini-cli",
-    "gemini cli",
-    "gemini",
-    "gemini code",
+    "woocode",
+    "woocode cli",
+    "woo code",
     "cli",
     "ide integration",
     "ide companion"
@@ -33,63 +32,63 @@
   "contributes": {
     "languages": [
       {
-        "id": "gemini-diff-editable"
+        "id": "woocode-diff-editable"
       }
     ],
     "commands": [
       {
-        "command": "gemini.diff.accept",
+        "command": "woocode.diff.accept",
         "title": "Gemini CLI: Accept Diff",
         "icon": "$(check)"
       },
       {
-        "command": "gemini.diff.cancel",
+        "command": "woocode.diff.cancel",
         "title": "Gemini CLI: Close Diff Editor",
         "icon": "$(close)"
       },
       {
-        "command": "gemini-cli.runGeminiCLI",
+        "command": "woocode-cli.runGeminiCLI",
         "title": "Gemini CLI: Run"
       },
       {
-        "command": "gemini-cli.showNotices",
+        "command": "woocode-cli.showNotices",
         "title": "Gemini CLI: View Third-Party Notices"
       }
     ],
     "menus": {
       "commandPalette": [
         {
-          "command": "gemini.diff.accept",
-          "when": "gemini.diff.isVisible"
+          "command": "woocode.diff.accept",
+          "when": "woocode.diff.isVisible"
         },
         {
-          "command": "gemini.diff.cancel",
-          "when": "gemini.diff.isVisible"
+          "command": "woocode.diff.cancel",
+          "when": "woocode.diff.isVisible"
         }
       ],
       "editor/title": [
         {
-          "command": "gemini.diff.accept",
-          "when": "gemini.diff.isVisible",
+          "command": "woocode.diff.accept",
+          "when": "woocode.diff.isVisible",
           "group": "navigation"
         },
         {
-          "command": "gemini.diff.cancel",
-          "when": "gemini.diff.isVisible",
+          "command": "woocode.diff.cancel",
+          "when": "woocode.diff.isVisible",
           "group": "navigation"
         }
       ]
     },
     "keybindings": [
       {
-        "command": "gemini.diff.accept",
+        "command": "woocode.diff.accept",
         "key": "ctrl+s",
-        "when": "gemini.diff.isVisible"
+        "when": "woocode.diff.isVisible"
       },
       {
-        "command": "gemini.diff.accept",
+        "command": "woocode.diff.accept",
         "key": "cmd+s",
-        "when": "gemini.diff.isVisible"
+        "when": "woocode.diff.isVisible"
       }
     ]
   },

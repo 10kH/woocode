@@ -5,8 +5,8 @@
  */
 
 import { useEffect, useReducer, useRef } from 'react';
-import type { Config, FileSearch } from '@google/gemini-cli-core';
-import { FileSearchFactory, escapePath } from '@google/gemini-cli-core';
+import type { Config, FileSearch } from 'woocode-core';
+import { FileSearchFactory, escapePath } from 'woocode-core';
 import type { Suggestion } from '../components/SuggestionsDisplay.js';
 import { MAX_SUGGESTIONS_TO_SHOW } from '../components/SuggestionsDisplay.js';
 
@@ -160,8 +160,8 @@ export function useAtCompletion(props: UseAtCompletionProps): void {
           ignoreDirs: [],
           useGitignore:
             config?.getFileFilteringOptions()?.respectGitIgnore ?? true,
-          useGeminiignore:
-            config?.getFileFilteringOptions()?.respectGeminiIgnore ?? true,
+          useWoocodeIgnore:
+            config?.getFileFilteringOptions()?.respectWoocodeIgnore ?? true,
           cache: true,
           cacheTtl: 30, // 30 seconds
           enableRecursiveFileSearch:

@@ -16,8 +16,8 @@ import {
   SETTINGS_DIRECTORY_NAME,
 } from '../config/settings.js';
 import { promisify } from 'node:util';
-import type { Config, SandboxConfig } from '@google/gemini-cli-core';
-import { FatalSandboxError } from '@google/gemini-cli-core';
+import type { Config, SandboxConfig } from 'woocode-core';
+import { FatalSandboxError } from 'woocode-core';
 import { ConsolePatcher } from '../ui/utils/ConsolePatcher.js';
 
 const execAsync = promisify(exec);
@@ -281,8 +281,8 @@ export async function start_sandbox(
           ...finalArgv.map((arg) => quote([arg])),
         ].join(' '),
       );
-      // start and set up proxy if GEMINI_SANDBOX_PROXY_COMMAND is set
-      const proxyCommand = process.env['GEMINI_SANDBOX_PROXY_COMMAND'];
+      // start and set up proxy if WOOCODE_SANDBOX_PROXY_COMMAND is set
+      const proxyCommand = process.env['WOOCODE_SANDBOX_PROXY_COMMAND'];
       let proxyProcess: ChildProcess | undefined = undefined;
       let sandboxProcess: ChildProcess | undefined = undefined;
       const sandboxEnv = { ...process.env };
@@ -389,7 +389,7 @@ export async function start_sandbox(
             stdio: 'inherit',
             env: {
               ...process.env,
-              GEMINI_SANDBOX: config.command, // in case sandbox is enabled via flags (see config.ts under cli package)
+              WOOCODE_SANDBOX: config.command, // in case sandbox is enabled via flags (see config.ts under cli package)
             },
           },
         );
@@ -509,8 +509,8 @@ export async function start_sandbox(
 
     // copy proxy environment variables, replacing localhost with SANDBOX_PROXY_NAME
     // copy as both upper-case and lower-case as is required by some utilities
-    // GEMINI_SANDBOX_PROXY_COMMAND implies HTTPS_PROXY unless HTTP_PROXY is set
-    const proxyCommand = process.env['GEMINI_SANDBOX_PROXY_COMMAND'];
+    // WOOCODE_SANDBOX_PROXY_COMMAND implies HTTPS_PROXY unless HTTP_PROXY is set
+    const proxyCommand = process.env['WOOCODE_SANDBOX_PROXY_COMMAND'];
 
     if (proxyCommand) {
       let proxy =
@@ -563,9 +563,9 @@ export async function start_sandbox(
     const containerName = `${imageName}-${index}`;
     args.push('--name', containerName, '--hostname', containerName);
 
-    // copy GEMINI_API_KEY(s)
-    if (process.env['GEMINI_API_KEY']) {
-      args.push('--env', `GEMINI_API_KEY=${process.env['GEMINI_API_KEY']}`);
+    // copy WOOCODE_API_KEY(s)
+    if (process.env['WOOCODE_API_KEY']) {
+      args.push('--env', `WOOCODE_API_KEY=${process.env['WOOCODE_API_KEY']}`);
     }
     if (process.env['GOOGLE_API_KEY']) {
       args.push('--env', `GOOGLE_API_KEY=${process.env['GOOGLE_API_KEY']}`);
@@ -603,9 +603,9 @@ export async function start_sandbox(
       );
     }
 
-    // copy GEMINI_MODEL
-    if (process.env['GEMINI_MODEL']) {
-      args.push('--env', `GEMINI_MODEL=${process.env['GEMINI_MODEL']}`);
+    // copy WOOCODE_MODEL
+    if (process.env['WOOCODE_MODEL']) {
+      args.push('--env', `WOOCODE_MODEL=${process.env['WOOCODE_MODEL']}`);
     }
 
     // copy TERM and COLORTERM to try to maintain terminal setup
@@ -618,8 +618,8 @@ export async function start_sandbox(
 
     // Pass through IDE mode environment variables
     for (const envVar of [
-      'GEMINI_CLI_IDE_SERVER_PORT',
-      'GEMINI_CLI_IDE_WORKSPACE_PATH',
+      'WOOCODE_CLI_IDE_SERVER_PORT',
+      'WOOCODE_CLI_IDE_WORKSPACE_PATH',
       'TERM_PROGRAM',
     ]) {
       if (process.env[envVar]) {
@@ -695,7 +695,7 @@ export async function start_sandbox(
     let userFlag = '';
     const finalEntrypoint = entrypoint(workdir, cliArgs);
 
-    if (process.env['GEMINI_CLI_INTEGRATION_TEST'] === 'true') {
+    if (process.env['WOOCODE_CLI_INTEGRATION_TEST'] === 'true') {
       args.push('--user', 'root');
       userFlag = '--user root';
     } else if (await shouldUseCurrentUserInSandbox()) {
@@ -742,7 +742,7 @@ export async function start_sandbox(
     // push container entrypoint (including args)
     args.push(...finalEntrypoint);
 
-    // start and set up proxy if GEMINI_SANDBOX_PROXY_COMMAND is set
+    // start and set up proxy if WOOCODE_SANDBOX_PROXY_COMMAND is set
     let proxyProcess: ChildProcess | undefined = undefined;
     let sandboxProcess: ChildProcess | undefined = undefined;
 

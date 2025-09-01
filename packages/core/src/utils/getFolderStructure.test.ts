@@ -250,13 +250,13 @@ ${testRootDir}${path.sep}
     it('should ignore files and folders specified in .gitignore', async () => {
       await fsPromises.writeFile(
         nodePath.join(testRootDir, '.gitignore'),
-        'ignored.txt\nnode_modules/\n.gemini/*\n!/.gemini/config.yaml',
+        'ignored.txt\nnode_modules/\n.woocode/*\n!/.woocode/config.yaml',
       );
       await createTestFile('file1.txt');
       await createTestFile('node_modules', 'some-package', 'index.js');
       await createTestFile('ignored.txt');
-      await createTestFile('.gemini', 'config.yaml');
-      await createTestFile('.gemini', 'logs.json');
+      await createTestFile('.woocode', 'config.yaml');
+      await createTestFile('.woocode', 'logs.json');
 
       const fileService = new FileDiscoveryService(testRootDir);
       const structure = await getFolderStructure(testRootDir, {
@@ -282,7 +282,7 @@ ${testRootDir}${path.sep}
       const structure = await getFolderStructure(testRootDir, {
         fileService,
         fileFilteringOptions: {
-          respectGeminiIgnore: false,
+          respectWoocodeIgnore: false,
           respectGitIgnore: false,
         },
       });
@@ -295,14 +295,14 @@ ${testRootDir}${path.sep}
   describe('with geminiignore', () => {
     it('should ignore geminiignore files by default', async () => {
       await fsPromises.writeFile(
-        nodePath.join(testRootDir, '.geminiignore'),
-        'ignored.txt\nnode_modules/\n.gemini/\n!/.gemini/config.yaml',
+        nodePath.join(testRootDir, '.woocodeignore'),
+        'ignored.txt\nnode_modules/\n.woocode/\n!/.woocode/config.yaml',
       );
       await createTestFile('file1.txt');
       await createTestFile('node_modules', 'some-package', 'index.js');
       await createTestFile('ignored.txt');
-      await createTestFile('.gemini', 'config.yaml');
-      await createTestFile('.gemini', 'logs.json');
+      await createTestFile('.woocode', 'config.yaml');
+      await createTestFile('.woocode', 'logs.json');
 
       const fileService = new FileDiscoveryService(testRootDir);
       const structure = await getFolderStructure(testRootDir, {
@@ -313,22 +313,22 @@ ${testRootDir}${path.sep}
       expect(structure).not.toContain('logs.json');
     });
 
-    it('should not ignore files if respectGeminiIgnore is false', async () => {
+    it('should not ignore files if respectWoocodeIgnore is false', async () => {
       await fsPromises.writeFile(
-        nodePath.join(testRootDir, '.geminiignore'),
-        'ignored.txt\nnode_modules/\n.gemini/\n!/.gemini/config.yaml',
+        nodePath.join(testRootDir, '.woocodeignore'),
+        'ignored.txt\nnode_modules/\n.woocode/\n!/.woocode/config.yaml',
       );
       await createTestFile('file1.txt');
       await createTestFile('node_modules', 'some-package', 'index.js');
       await createTestFile('ignored.txt');
-      await createTestFile('.gemini', 'config.yaml');
-      await createTestFile('.gemini', 'logs.json');
+      await createTestFile('.woocode', 'config.yaml');
+      await createTestFile('.woocode', 'logs.json');
 
       const fileService = new FileDiscoveryService(testRootDir);
       const structure = await getFolderStructure(testRootDir, {
         fileService,
         fileFilteringOptions: {
-          respectGeminiIgnore: false,
+          respectWoocodeIgnore: false,
           respectGitIgnore: true, // Explicitly disable gemini ignore only
         },
       });

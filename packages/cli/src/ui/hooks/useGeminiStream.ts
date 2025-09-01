@@ -16,7 +16,7 @@ import type {
   ThoughtSummary,
   ToolCallRequestInfo,
   GeminiErrorEventValue,
-} from '@google/gemini-cli-core';
+} from 'woocode-core';
 import {
   GeminiEventType as ServerGeminiEventType,
   getErrorMessage,
@@ -26,12 +26,12 @@ import {
   GitService,
   UnauthorizedError,
   UserPromptEvent,
-  DEFAULT_GEMINI_FLASH_MODEL,
+  DEFAULT_WOOCODE_FLASH_MODEL,
   logConversationFinishedEvent,
   ConversationFinishedEvent,
   ApprovalMode,
   parseAndFormatApiError,
-} from '@google/gemini-cli-core';
+} from 'woocode-core';
 import { type Part, type PartListUnion, FinishReason } from '@google/genai';
 import type {
   HistoryItem,
@@ -478,7 +478,7 @@ export const useGeminiStream = (
             config.getContentGeneratorConfig()?.authType,
             undefined,
             config.getModel(),
-            DEFAULT_GEMINI_FLASH_MODEL,
+            DEFAULT_WOOCODE_FLASH_MODEL,
           ),
         },
         userMessageTimestamp,
@@ -743,7 +743,7 @@ export const useGeminiStream = (
                 config.getContentGeneratorConfig()?.authType,
                 undefined,
                 config.getModel(),
-                DEFAULT_GEMINI_FLASH_MODEL,
+                DEFAULT_WOOCODE_FLASH_MODEL,
               ),
             },
             userMessageTimestamp,

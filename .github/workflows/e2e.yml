@@ -53,7 +53,7 @@ jobs:
 
       - name: 'Run E2E tests'
         env:
-          GEMINI_API_KEY: '${{ secrets.GEMINI_API_KEY }}'
+          WOOCODE_API_KEY: '${{ secrets.WOOCODE_API_KEY }}'
           KEEP_OUTPUT: 'true'
           SANDBOX: '${{ matrix.sandbox }}'
           VERBOSE: 'true'
@@ -83,6 +83,6 @@ jobs:
 
       - name: 'Run E2E tests'
         env:
-          GEMINI_API_KEY: '${{ secrets.GEMINI_API_KEY }}'
+          WOOCODE_API_KEY: '${{ secrets.WOOCODE_API_KEY }}'
         run: |-
           npm run test:e2e

@@ -28,27 +28,27 @@ Configuration is applied in the following order of precedence (lower numbers are
 Gemini CLI uses JSON settings files for persistent configuration. There are four locations for these files:
 
 - **System defaults file:**
-  - **Location:** `/etc/gemini-cli/system-defaults.json` (Linux), `C:\ProgramData\gemini-cli\system-defaults.json` (Windows) or `/Library/Application Support/GeminiCli/system-defaults.json` (macOS). The path can be overridden using the `GEMINI_CLI_SYSTEM_DEFAULTS_PATH` environment variable.
+  - **Location:** `/etc/gemini-cli/system-defaults.json` (Linux), `C:\ProgramData\gemini-cli\system-defaults.json` (Windows) or `/Library/Application Support/GeminiCli/system-defaults.json` (macOS). The path can be overridden using the `WOOCODE_CLI_SYSTEM_DEFAULTS_PATH` environment variable.
   - **Scope:** Provides a base layer of system-wide default settings. These settings have the lowest precedence and are intended to be overridden by user, project, or system override settings.
 - **User settings file:**
-  - **Location:** `~/.gemini/settings.json` (where `~` is your home directory).
+  - **Location:** `~/.woocode/settings.json` (where `~` is your home directory).
   - **Scope:** Applies to all Gemini CLI sessions for the current user. User settings override system defaults.
 - **Project settings file:**
-  - **Location:** `.gemini/settings.json` within your project's root directory.
+  - **Location:** `.woocode/settings.json` within your project's root directory.
   - **Scope:** Applies only when running Gemini CLI from that specific project. Project settings override user settings and system defaults.
 - **System settings file:**
-  - **Location:** `/etc/gemini-cli/settings.json` (Linux), `C:\ProgramData\gemini-cli\settings.json` (Windows) or `/Library/Application Support/GeminiCli/settings.json` (macOS). The path can be overridden using the `GEMINI_CLI_SYSTEM_SETTINGS_PATH` environment variable.
+  - **Location:** `/etc/gemini-cli/settings.json` (Linux), `C:\ProgramData\gemini-cli\settings.json` (Windows) or `/Library/Application Support/GeminiCli/settings.json` (macOS). The path can be overridden using the `WOOCODE_CLI_SYSTEM_SETTINGS_PATH` environment variable.
   - **Scope:** Applies to all Gemini CLI sessions on the system, for all users. System settings act as overrides, taking precedence over all other settings files. May be useful for system administrators at enterprises to have controls over users' Gemini CLI setups.
 
 **Note on environment variables in settings:** String values within your `settings.json` files can reference environment variables using either `$VAR_NAME` or `${VAR_NAME}` syntax. These variables will be automatically resolved when the settings are loaded. For example, if you have an environment variable `MY_API_TOKEN`, you could use it in `settings.json` like this: `"apiKey": "$MY_API_TOKEN"`.
 
 > **Note for Enterprise Users:** For guidance on deploying and managing Gemini CLI in a corporate environment, please see the [Enterprise Configuration](./enterprise.md) documentation.
 
-### The `.gemini` directory in your project
+### The `.woocode` directory in your project
 
-In addition to a project settings file, a project's `.gemini` directory can contain other project-specific files related to Gemini CLI's operation, such as:
+In addition to a project settings file, a project's `.woocode` directory can contain other project-specific files related to Gemini CLI's operation, such as:
 
-- [Custom sandbox profiles](#sandboxing) (e.g., `.gemini/sandbox-macos-custom.sb`, `.gemini/sandbox.Dockerfile`).
+- [Custom sandbox profiles](#sandboxing) (e.g., `.woocode/sandbox-macos-custom.sb`, `.woocode/sandbox.Dockerfile`).
 
 ### Available settings in `settings.json`
 
@@ -179,7 +179,7 @@ Settings are organized into categories. All settings should be placed within the
   - **Default:** `true`
 
 - **`context.fileFiltering.respectGeminiIgnore`** (boolean):
-  - **Description:** Respect .geminiignore files when searching.
+  - **Description:** Respect .woocodeignore files when searching.
   - **Default:** `true`
 
 - **`context.fileFiltering.enableRecursiveFileSearch`** (boolean):
@@ -344,7 +344,7 @@ Here is an example of a `settings.json` file with the new nested structure:
     }
   },
   "context": {
-    "fileName": ["CONTEXT.md", "GEMINI.md"],
+    "fileName": ["CONTEXT.md", "WOOCODE.md"],
     "includeDirectories": ["path/to/dir1", "~/path/to/dir2", "../path/to/dir3"],
     "loadFromIncludeDirectories": true,
     "fileFiltering": {
@@ -361,7 +361,7 @@ Here is an example of a `settings.json` file with the new nested structure:
 
 The CLI keeps a history of shell commands you run. To avoid conflicts between different projects, this history is stored in a project-specific directory within your user's home folder.
 
-- **Location:** `~/.gemini/tmp/<project_hash>/shell_history`
+- **Location:** `~/.woocode/tmp/<project_hash>/shell_history`
   - `<project_hash>` is a unique identifier generated from your project's root path.
   - The history is stored in a file named `shell_history`.
 
@@ -375,16 +375,16 @@ The CLI automatically loads environment variables from an `.env` file. The loadi
 2.  If not found, it searches upwards in parent directories until it finds an `.env` file or reaches the project root (identified by a `.git` folder) or the home directory.
 3.  If still not found, it looks for `~/.env` (in the user's home directory).
 
-**Environment Variable Exclusion:** Some environment variables (like `DEBUG` and `DEBUG_MODE`) are automatically excluded from being loaded from project `.env` files to prevent interference with gemini-cli behavior. Variables from `.gemini/.env` files are never excluded. You can customize this behavior using the `advanced.excludedEnvVars` setting in your `settings.json` file.
+**Environment Variable Exclusion:** Some environment variables (like `DEBUG` and `DEBUG_MODE`) are automatically excluded from being loaded from project `.env` files to prevent interference with gemini-cli behavior. Variables from `.woocode/.env` files are never excluded. You can customize this behavior using the `advanced.excludedEnvVars` setting in your `settings.json` file.
 
-- **`GEMINI_API_KEY`**:
+- **`WOOCODE_API_KEY`**:
   - Your API key for the Gemini API.
   - One of several available [authentication methods](./authentication.md).
   - Set this in your shell profile (e.g., `~/.bashrc`, `~/.zshrc`) or an `.env` file.
-- **`GEMINI_MODEL`**:
+- **`WOOCODE_MODEL`**:
   - Specifies the default Gemini model to use.
   - Overrides the hardcoded default
-  - Example: `export GEMINI_MODEL="gemini-2.5-flash"`
+  - Example: `export WOOCODE_MODEL="gemini-2.5-flash"`
 - **`GOOGLE_API_KEY`**:
   - Your Google Cloud API key.
   - Required for using Vertex AI in express mode.
@@ -406,17 +406,17 @@ The CLI automatically loads environment variables from an `.env` file. The loadi
   - Your Google Cloud Project Location (e.g., us-central1).
   - Required for using Vertex AI in non express mode.
   - Example: `export GOOGLE_CLOUD_LOCATION="YOUR_PROJECT_LOCATION"`.
-- **`GEMINI_SANDBOX`**:
+- **`WOOCODE_SANDBOX`**:
   - Alternative to the `sandbox` setting in `settings.json`.
   - Accepts `true`, `false`, `docker`, `podman`, or a custom command string.
 - **`SEATBELT_PROFILE`** (macOS specific):
   - Switches the Seatbelt (`sandbox-exec`) profile on macOS.
   - `permissive-open`: (Default) Restricts writes to the project folder (and a few other folders, see `packages/cli/src/utils/sandbox-macos-permissive-open.sb`) but allows other operations.
   - `strict`: Uses a strict profile that declines operations by default.
-  - `<profile_name>`: Uses a custom profile. To define a custom profile, create a file named `sandbox-macos-<profile_name>.sb` in your project's `.gemini/` directory (e.g., `my-project/.gemini/sandbox-macos-custom.sb`).
+  - `<profile_name>`: Uses a custom profile. To define a custom profile, create a file named `sandbox-macos-<profile_name>.sb` in your project's `.woocode/` directory (e.g., `my-project/.woocode/sandbox-macos-custom.sb`).
 - **`DEBUG` or `DEBUG_MODE`** (often used by underlying libraries or the CLI itself):
   - Set to `true` or `1` to enable verbose debug logging, which can be helpful for troubleshooting.
-  - **Note:** These variables are automatically excluded from project `.env` files by default to prevent interference with gemini-cli behavior. Use `.gemini/.env` files if you need to set these for gemini-cli specifically.
+  - **Note:** These variables are automatically excluded from project `.env` files by default to prevent interference with gemini-cli behavior. Use `.woocode/.env` files if you need to set these for gemini-cli specifically.
 - **`NO_COLOR`**:
   - Set to any value to disable all color output in the CLI.
 - **`CLI_TITLE`**:
@@ -496,11 +496,11 @@ Arguments passed directly when running the CLI can override other configurations
 
 ## Context Files (Hierarchical Instructional Context)
 
-While not strictly configuration for the CLI's _behavior_, context files (defaulting to `GEMINI.md` but configurable via the `context.fileName` setting) are crucial for configuring the _instructional context_ (also referred to as "memory") provided to the Gemini model. This powerful feature allows you to give project-specific instructions, coding style guides, or any relevant background information to the AI, making its responses more tailored and accurate to your needs. The CLI includes UI elements, such as an indicator in the footer showing the number of loaded context files, to keep you informed about the active context.
+While not strictly configuration for the CLI's _behavior_, context files (defaulting to `WOOCODE.md` but configurable via the `context.fileName` setting) are crucial for configuring the _instructional context_ (also referred to as "memory") provided to the Gemini model. This powerful feature allows you to give project-specific instructions, coding style guides, or any relevant background information to the AI, making its responses more tailored and accurate to your needs. The CLI includes UI elements, such as an indicator in the footer showing the number of loaded context files, to keep you informed about the active context.
 
 - **Purpose:** These Markdown files contain instructions, guidelines, or context that you want the Gemini model to be aware of during your interactions. The system is designed to manage this instructional context hierarchically.
 
-### Example Context File Content (e.g., `GEMINI.md`)
+### Example Context File Content (e.g., `WOOCODE.md`)
 
 Here's a conceptual example of what a context file at the root of a TypeScript project might contain:
 
@@ -535,9 +535,9 @@ Here's a conceptual example of what a context file at the root of a TypeScript p
 
 This example demonstrates how you can provide general project context, specific coding conventions, and even notes about particular files or components. The more relevant and precise your context files are, the better the AI can assist you. Project-specific context files are highly encouraged to establish conventions and context.
 
-- **Hierarchical Loading and Precedence:** The CLI implements a sophisticated hierarchical memory system by loading context files (e.g., `GEMINI.md`) from several locations. Content from files lower in this list (more specific) typically overrides or supplements content from files higher up (more general). The exact concatenation order and final context can be inspected using the `/memory show` command. The typical loading order is:
+- **Hierarchical Loading and Precedence:** The CLI implements a sophisticated hierarchical memory system by loading context files (e.g., `WOOCODE.md`) from several locations. Content from files lower in this list (more specific) typically overrides or supplements content from files higher up (more general). The exact concatenation order and final context can be inspected using the `/memory show` command. The typical loading order is:
   1.  **Global Context File:**
-      - Location: `~/.gemini/<configured-context-filename>` (e.g., `~/.gemini/GEMINI.md` in your user home directory).
+      - Location: `~/.woocode/<configured-context-filename>` (e.g., `~/.woocode/WOOCODE.md` in your user home directory).
       - Scope: Provides default instructions for all your projects.
   2.  **Project Root & Ancestors Context Files:**
       - Location: The CLI searches for the configured context file in the current working directory and then in each parent directory up to either the project root (identified by a `.git` folder) or your home directory.
@@ -561,12 +561,12 @@ The Gemini CLI can execute potentially unsafe operations (like shell commands an
 Sandboxing is disabled by default, but you can enable it in a few ways:
 
 - Using `--sandbox` or `-s` flag.
-- Setting `GEMINI_SANDBOX` environment variable.
+- Setting `WOOCODE_SANDBOX` environment variable.
 - Sandbox is enabled when using `--yolo` or `--approval-mode=yolo` by default.
 
 By default, it uses a pre-built `gemini-cli-sandbox` Docker image.
 
-For project-specific sandboxing needs, you can create a custom Dockerfile at `.gemini/sandbox.Dockerfile` in your project's root directory. This Dockerfile can be based on the base sandbox image:
+For project-specific sandboxing needs, you can create a custom Dockerfile at `.woocode/sandbox.Dockerfile` in your project's root directory. This Dockerfile can be based on the base sandbox image:
 
 ```dockerfile
 FROM gemini-cli-sandbox
@@ -577,7 +577,7 @@ FROM gemini-cli-sandbox
 # COPY ./my-config /app/my-config
 ```
 
-When `.gemini/sandbox.Dockerfile` exists, you can use `BUILD_SANDBOX` environment variable when running Gemini CLI to automatically build the custom sandbox image:
+When `.woocode/sandbox.Dockerfile` exists, you can use `BUILD_SANDBOX` environment variable when running Gemini CLI to automatically build the custom sandbox image:
 
 ```bash
 BUILD_SANDBOX=1 gemini -s

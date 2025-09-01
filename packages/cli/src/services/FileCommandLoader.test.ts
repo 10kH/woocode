@@ -5,8 +5,8 @@
  */
 
 import * as path from 'node:path';
-import type { Config } from '@google/gemini-cli-core';
-import { Storage } from '@google/gemini-cli-core';
+import type { Config } from 'woocode-core';
+import { Storage } from 'woocode-core';
 import mock from 'mock-fs';
 import { FileCommandLoader } from './FileCommandLoader.js';
 import { assert, vi } from 'vitest';
@@ -57,9 +57,9 @@ vi.mock('./prompt-processors/argumentProcessor.js', async (importOriginal) => {
       .mockImplementation(() => new original.DefaultArgumentProcessor()),
   };
 });
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('woocode-core', async (importOriginal) => {
   const original =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('woocode-core')>();
   return {
     ...original,
     Storage: original.Storage,
@@ -529,7 +529,7 @@ describe('FileCommandLoader', () => {
       ).getProjectCommandsDir();
       const extensionDir = path.join(
         process.cwd(),
-        '.gemini/extensions/test-ext',
+        '.woocode/extensions/test-ext',
       );
 
       mock({
@@ -582,7 +582,7 @@ describe('FileCommandLoader', () => {
       ).getProjectCommandsDir();
       const extensionDir = path.join(
         process.cwd(),
-        '.gemini/extensions/test-ext',
+        '.woocode/extensions/test-ext',
       );
 
       mock({
@@ -678,11 +678,11 @@ describe('FileCommandLoader', () => {
     it('only loads commands from active extensions', async () => {
       const extensionDir1 = path.join(
         process.cwd(),
-        '.gemini/extensions/active-ext',
+        '.woocode/extensions/active-ext',
       );
       const extensionDir2 = path.join(
         process.cwd(),
-        '.gemini/extensions/inactive-ext',
+        '.woocode/extensions/inactive-ext',
       );
 
       mock({
@@ -737,7 +737,7 @@ describe('FileCommandLoader', () => {
     it('handles missing extension commands directory gracefully', async () => {
       const extensionDir = path.join(
         process.cwd(),
-        '.gemini/extensions/no-commands',
+        '.woocode/extensions/no-commands',
       );
 
       mock({
@@ -769,7 +769,7 @@ describe('FileCommandLoader', () => {
     });
 
     it('handles nested command structure in extensions', async () => {
-      const extensionDir = path.join(process.cwd(), '.gemini/extensions/a');
+      const extensionDir = path.join(process.cwd(), '.woocode/extensions/a');
 
       mock({
         [extensionDir]: {

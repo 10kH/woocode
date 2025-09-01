@@ -14,7 +14,7 @@ jobs:
   generate-report:
     name: 'Generate Report 📝'
     if: |-
-      ${{ github.repository == 'google-gemini/gemini-cli' }}
+      ${{ github.repository == 'woocode/woocode' }}
     runs-on: 'ubuntu-latest'
     permissions:
       issues: 'write'
@@ -177,7 +177,7 @@ jobs:
           gcp_project_id: '${{ vars.GOOGLE_CLOUD_PROJECT }}'
           gcp_location: '${{ vars.GOOGLE_CLOUD_LOCATION }}'
           gcp_service_account: '${{ vars.SERVICE_ACCOUNT_EMAIL }}'
-          gemini_api_key: '${{ secrets.GEMINI_API_KEY }}'
+          gemini_api_key: '${{ secrets.WOOCODE_API_KEY }}'
           use_vertex_ai: '${{ vars.GOOGLE_GENAI_USE_VERTEXAI }}'
           use_gemini_code_assist: '${{ vars.GOOGLE_GENAI_USE_GCA }}'
           settings: |-

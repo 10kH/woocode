@@ -8,9 +8,9 @@ const { logSlashCommand } = vi.hoisted(() => ({
   logSlashCommand: vi.fn(),
 }));
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('woocode-core', async (importOriginal) => {
   const original =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('woocode-core')>();
 
   return {
     ...original,
@@ -88,7 +88,7 @@ import {
   makeFakeConfig,
   ToolConfirmationOutcome,
   type IdeClient,
-} from '@google/gemini-cli-core';
+} from 'woocode-core';
 
 function createTestCommand(
   overrides: Partial<SlashCommand>,

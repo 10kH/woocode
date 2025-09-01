@@ -15,7 +15,7 @@ import { MessageType } from '../types.js';
 import { GIT_COMMIT_INFO } from '../../generated/git-commit.js';
 import { formatMemoryUsage } from '../utils/formatters.js';
 import { getCliVersion } from '../../utils/version.js';
-import { sessionId } from '@google/gemini-cli-core';
+import { sessionId } from 'woocode-core';
 
 export const bugCommand: SlashCommand = {
   name: 'bug',
@@ -56,7 +56,7 @@ export const bugCommand: SlashCommand = {
     }
 
     let bugReportUrl =
-      'https://github.com/google-gemini/gemini-cli/issues/new?template=bug_report.yml&title={title}&info={info}';
+      'https://github.com/woocode/woocode/issues/new?template=bug_report.yml&title={title}&info={info}';
 
     const bugCommandSettings = config?.getBugCommand();
     if (bugCommandSettings?.urlTemplate) {

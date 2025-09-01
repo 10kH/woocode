@@ -45,7 +45,7 @@ jobs:
       name: 'production-release'
       url: '${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ steps.version.outputs.RELEASE_TAG }}'
     if: |-
-      ${{ github.repository == 'google-gemini/gemini-cli' }}
+      ${{ github.repository == 'woocode/woocode' }}
     permissions:
       contents: 'write'
       packages: 'write'
@@ -116,7 +116,7 @@ jobs:
         if: |-
           ${{ github.event.inputs.force_skip_tests != 'true' }}
         env:
-          GEMINI_API_KEY: '${{ secrets.GEMINI_API_KEY }}'
+          WOOCODE_API_KEY: '${{ secrets.WOOCODE_API_KEY }}'
         run: |-
           npm run preflight
           npm run test:integration:sandbox:none
@@ -169,7 +169,7 @@ jobs:
           registry-url: 'https://wombat-dressing-room.appspot.com'
           scope: '@google'
 
-      - name: 'Publish @google/gemini-cli-core'
+      - name: 'Publish woocode-core'
         env:
           IS_DRY_RUN: '${{ steps.vars.outputs.is_dry_run }}'
           NODE_AUTH_TOKEN: '${{ secrets.WOMBAT_TOKEN_CORE }}'
@@ -177,7 +177,7 @@ jobs:
         run: |-
           npm publish \
             --dry-run="${IS_DRY_RUN}" \
-            --workspace="@google/gemini-cli-core" \
+            --workspace="woocode-core" \
             --tag="${NPM_TAG}"
 
       - name: 'Install latest core package'
@@ -186,11 +186,11 @@ jobs:
         env:
           RELEASE_VERSION: '${{ steps.version.outputs.RELEASE_VERSION }}'
         run: |-
-          npm install "@google/gemini-cli-core@${RELEASE_VERSION}" \
-          --workspace="@google/gemini-cli" \
+          npm install "woocode-core@${RELEASE_VERSION}" \
+          --workspace="woocode" \
           --save-exact
 
-      - name: 'Publish @google/gemini-cli'
+      - name: 'Publish woocode'
         env:
           IS_DRY_RUN: '${{ steps.vars.outputs.is_dry_run }}'
           NODE_AUTH_TOKEN: '${{ secrets.WOMBAT_TOKEN_CLI }}'
@@ -198,7 +198,7 @@ jobs:
         run: |-
           npm publish \
             --dry-run="${IS_DRY_RUN}" \
-            --workspace="@google/gemini-cli" \
+            --workspace="woocode" \
             --tag="${NPM_TAG}"
 
       - name: 'Create GitHub Release and Tag'

@@ -57,7 +57,7 @@ expect.extend({
     const { isNot } = this;
     const event = JSON.parse(received[0].source_extension_json) as LogEvent;
     const metadata = event['event_metadata'][0];
-    const data = metadata.find((m) => m.gemini_cli_key === key)?.value;
+    const data = metadata.find((m) => m.woocode_cli_key === key)?.value;
 
     const pass = data !== undefined && data === value;
 
@@ -181,7 +181,7 @@ describe('ClearcutLogger', () => {
       const event = logger?.createLogEvent(EventNames.API_ERROR, []);
 
       expect(event?.event_metadata[0]).toContainEqual({
-        gemini_cli_key: EventMetadataKey.GEMINI_CLI_GOOGLE_ACCOUNTS_COUNT,
+        woocode_cli_key: EventMetadataKey.WOOCODE_CLI_GOOGLE_ACCOUNTS_COUNT,
         value: '9001',
       });
     });
@@ -194,7 +194,7 @@ describe('ClearcutLogger', () => {
       const event = logger?.createLogEvent(EventNames.CHAT_COMPRESSION, []);
 
       expect(event?.event_metadata[0]).toContainEqual({
-        gemini_cli_key: EventMetadataKey.GEMINI_CLI_SURFACE,
+        woocode_cli_key: EventMetadataKey.WOOCODE_CLI_SURFACE,
         value: 'GitHub',
       });
     });
@@ -227,35 +227,35 @@ describe('ClearcutLogger', () => {
       expect(event?.event_metadata[0]).toEqual(
         expect.arrayContaining([
           {
-            gemini_cli_key: EventMetadataKey.GEMINI_CLI_SESSION_ID,
+            woocode_cli_key: EventMetadataKey.WOOCODE_CLI_SESSION_ID,
             value: session_id,
           },
           {
-            gemini_cli_key: EventMetadataKey.GEMINI_CLI_AUTH_TYPE,
+            woocode_cli_key: EventMetadataKey.WOOCODE_CLI_AUTH_TYPE,
             value: JSON.stringify(auth_type),
           },
           {
-            gemini_cli_key: EventMetadataKey.GEMINI_CLI_GOOGLE_ACCOUNTS_COUNT,
+            woocode_cli_key: EventMetadataKey.WOOCODE_CLI_GOOGLE_ACCOUNTS_COUNT,
             value: `${google_accounts}`,
           },
           {
-            gemini_cli_key: EventMetadataKey.GEMINI_CLI_SURFACE,
+            woocode_cli_key: EventMetadataKey.WOOCODE_CLI_SURFACE,
             value: surface,
           },
           {
-            gemini_cli_key: EventMetadataKey.GEMINI_CLI_VERSION,
+            woocode_cli_key: EventMetadataKey.WOOCODE_CLI_VERSION,
             value: cli_version,
           },
           {
-            gemini_cli_key: EventMetadataKey.GEMINI_CLI_GIT_COMMIT_HASH,
+            woocode_cli_key: EventMetadataKey.WOOCODE_CLI_GIT_COMMIT_HASH,
             value: git_commit_hash,
           },
           {
-            gemini_cli_key: EventMetadataKey.GEMINI_CLI_PROMPT_ID,
+            woocode_cli_key: EventMetadataKey.WOOCODE_CLI_PROMPT_ID,
             value: prompt_id,
           },
           {
-            gemini_cli_key: EventMetadataKey.GEMINI_CLI_OS,
+            woocode_cli_key: EventMetadataKey.WOOCODE_CLI_OS,
             value: process.platform,
           },
         ]),
@@ -268,7 +268,7 @@ describe('ClearcutLogger', () => {
       const event = logger?.createLogEvent(EventNames.API_ERROR, []);
 
       expect(event?.event_metadata[0]).toContainEqual({
-        gemini_cli_key: EventMetadataKey.GEMINI_CLI_NODE_VERSION,
+        woocode_cli_key: EventMetadataKey.WOOCODE_CLI_NODE_VERSION,
         value: process.versions.node,
       });
     });
@@ -282,7 +282,7 @@ describe('ClearcutLogger', () => {
       const event = logger?.createLogEvent(EventNames.API_ERROR, []);
 
       expect(event?.event_metadata[0]).toContainEqual({
-        gemini_cli_key: EventMetadataKey.GEMINI_CLI_SURFACE,
+        woocode_cli_key: EventMetadataKey.WOOCODE_CLI_SURFACE,
         value: 'ide-1234',
       });
     });
@@ -337,7 +337,7 @@ describe('ClearcutLogger', () => {
         }
         const event = logger?.createLogEvent(EventNames.API_ERROR, []);
         expect(event?.event_metadata[0][3]).toEqual({
-          gemini_cli_key: EventMetadataKey.GEMINI_CLI_SURFACE,
+          woocode_cli_key: EventMetadataKey.WOOCODE_CLI_SURFACE,
           value: expectedValue,
         });
       },
@@ -358,11 +358,11 @@ describe('ClearcutLogger', () => {
       expect(events.length).toBe(1);
       expect(events[0]).toHaveEventName(EventNames.CHAT_COMPRESSION);
       expect(events[0]).toHaveMetadataValue([
-        EventMetadataKey.GEMINI_CLI_COMPRESSION_TOKENS_BEFORE,
+        EventMetadataKey.WOOCODE_CLI_COMPRESSION_TOKENS_BEFORE,
         '9001',
       ]);
       expect(events[0]).toHaveMetadataValue([
-        EventMetadataKey.GEMINI_CLI_COMPRESSION_TOKENS_AFTER,
+        EventMetadataKey.WOOCODE_CLI_COMPRESSION_TOKENS_AFTER,
         '8000',
       ]);
     });
@@ -382,7 +382,7 @@ describe('ClearcutLogger', () => {
         logger!.enqueueLogEvent(
           logger!.createLogEvent(EventNames.API_ERROR, [
             {
-              gemini_cli_key: EventMetadataKey.GEMINI_CLI_AI_ADDED_LINES,
+              woocode_cli_key: EventMetadataKey.WOOCODE_CLI_AI_ADDED_LINES,
               value: `${i}`,
             },
           ]),
@@ -392,7 +392,7 @@ describe('ClearcutLogger', () => {
       let events = getEvents(logger!);
       expect(events.length).toBe(TEST_ONLY.MAX_EVENTS);
       expect(events[0]).toHaveMetadataValue([
-        EventMetadataKey.GEMINI_CLI_AI_ADDED_LINES,
+        EventMetadataKey.WOOCODE_CLI_AI_ADDED_LINES,
         '0',
       ]);
 
@@ -400,7 +400,7 @@ describe('ClearcutLogger', () => {
       logger!.enqueueLogEvent(
         logger!.createLogEvent(EventNames.API_ERROR, [
           {
-            gemini_cli_key: EventMetadataKey.GEMINI_CLI_AI_ADDED_LINES,
+            woocode_cli_key: EventMetadataKey.WOOCODE_CLI_AI_ADDED_LINES,
             value: `${TEST_ONLY.MAX_EVENTS}`,
           },
         ]),
@@ -408,12 +408,12 @@ describe('ClearcutLogger', () => {
       events = getEvents(logger!);
       expect(events.length).toBe(TEST_ONLY.MAX_EVENTS);
       expect(events[0]).toHaveMetadataValue([
-        EventMetadataKey.GEMINI_CLI_AI_ADDED_LINES,
+        EventMetadataKey.WOOCODE_CLI_AI_ADDED_LINES,
         '1',
       ]);
 
       expect(events.at(TEST_ONLY.MAX_EVENTS - 1)).toHaveMetadataValue([
-        EventMetadataKey.GEMINI_CLI_AI_ADDED_LINES,
+        EventMetadataKey.WOOCODE_CLI_AI_ADDED_LINES,
         `${TEST_ONLY.MAX_EVENTS}`,
       ]);
     });

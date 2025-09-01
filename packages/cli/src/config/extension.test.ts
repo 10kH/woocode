@@ -23,10 +23,10 @@ import {
   type Extension,
 } from './extension.js';
 import {
-  GEMINI_DIR,
+  WOOCODE_DIR,
   type GeminiCLIExtension,
   type MCPServerConfig,
-} from '@google/gemini-cli-core';
+} from 'woocode-core';
 import { execSync } from 'node:child_process';
 import { SettingScope, loadSettings } from './settings.js';
 import { type SimpleGit, simpleGit } from 'simple-git';
@@ -60,7 +60,7 @@ vi.mock('child_process', async (importOriginal) => {
   };
 });
 
-const EXTENSIONS_DIRECTORY_NAME = path.join(GEMINI_DIR, 'extensions');
+const EXTENSIONS_DIRECTORY_NAME = path.join(WOOCODE_DIR, 'extensions');
 
 describe('loadExtensions', () => {
   let tempWorkspaceDir: string;
@@ -121,7 +121,7 @@ describe('loadExtensions', () => {
     expect(extensions[0].config.name).toBe('test-extension');
   });
 
-  it('should load context file path when GEMINI.md is present', () => {
+  it('should load context file path when WOOCODE.md is present', () => {
     createExtension({
       extensionsDir: workspaceExtensionsDir,
       name: 'ext1',
@@ -140,7 +140,7 @@ describe('loadExtensions', () => {
     const ext1 = extensions.find((e) => e.config.name === 'ext1');
     const ext2 = extensions.find((e) => e.config.name === 'ext2');
     expect(ext1?.contextFiles).toEqual([
-      path.join(workspaceExtensionsDir, 'ext1', 'GEMINI.md'),
+      path.join(workspaceExtensionsDir, 'ext1', 'WOOCODE.md'),
     ]);
     expect(ext2?.contextFiles).toEqual([]);
   });
@@ -175,7 +175,7 @@ describe('loadExtensions', () => {
       version: '2.0.0',
     });
 
-    const settingsDir = path.join(tempWorkspaceDir, GEMINI_DIR);
+    const settingsDir = path.join(tempWorkspaceDir, WOOCODE_DIR);
     fs.mkdirSync(settingsDir, { recursive: true });
     fs.writeFileSync(
       path.join(settingsDir, 'settings.json'),
@@ -397,7 +397,7 @@ describe('installExtension', () => {
       path.join(os.tmpdir(), 'gemini-cli-test-home-'),
     );
     vi.mocked(os.homedir).mockReturnValue(tempHomeDir);
-    userExtensionsDir = path.join(tempHomeDir, GEMINI_DIR, 'extensions');
+    userExtensionsDir = path.join(tempHomeDir, WOOCODE_DIR, 'extensions');
     // Clean up before each test
     fs.rmSync(userExtensionsDir, { recursive: true, force: true });
     fs.mkdirSync(userExtensionsDir, { recursive: true });
@@ -498,7 +498,7 @@ describe('uninstallExtension', () => {
       path.join(os.tmpdir(), 'gemini-cli-test-home-'),
     );
     vi.mocked(os.homedir).mockReturnValue(tempHomeDir);
-    userExtensionsDir = path.join(tempHomeDir, GEMINI_DIR, 'extensions');
+    userExtensionsDir = path.join(tempHomeDir, WOOCODE_DIR, 'extensions');
     // Clean up before each test
     fs.rmSync(userExtensionsDir, { recursive: true, force: true });
     fs.mkdirSync(userExtensionsDir, { recursive: true });
@@ -604,7 +604,7 @@ describe('performWorkspaceExtensionMigration', () => {
 
       const userExtensionsDir = path.join(
         tempHomeDir,
-        GEMINI_DIR,
+        WOOCODE_DIR,
         'extensions',
       );
 
@@ -646,7 +646,7 @@ describe('performWorkspaceExtensionMigration', () => {
 
     expect(failed).toEqual([]);
 
-    const userExtensionsDir = path.join(tempHomeDir, GEMINI_DIR, 'extensions');
+    const userExtensionsDir = path.join(tempHomeDir, WOOCODE_DIR, 'extensions');
     const userExt1Path = path.join(userExtensionsDir, 'ext1');
     const extensions = loadExtensions(tempWorkspaceDir);
 
@@ -697,7 +697,7 @@ function createExtension({
   );
 
   if (addContextFile) {
-    fs.writeFileSync(path.join(extDir, 'GEMINI.md'), 'context');
+    fs.writeFileSync(path.join(extDir, 'WOOCODE.md'), 'context');
   }
 
   if (contextFileName) {
@@ -715,7 +715,7 @@ describe('updateExtension', () => {
       path.join(os.tmpdir(), 'gemini-cli-test-home-'),
     );
     vi.mocked(os.homedir).mockReturnValue(tempHomeDir);
-    userExtensionsDir = path.join(tempHomeDir, GEMINI_DIR, 'extensions');
+    userExtensionsDir = path.join(tempHomeDir, WOOCODE_DIR, 'extensions');
     // Clean up before each test
     fs.rmSync(userExtensionsDir, { recursive: true, force: true });
     fs.mkdirSync(userExtensionsDir, { recursive: true });
@@ -839,7 +839,7 @@ describe('enableExtension', () => {
     tempHomeDir = fs.mkdtempSync(
       path.join(os.tmpdir(), 'gemini-cli-test-home-'),
     );
-    userExtensionsDir = path.join(tempHomeDir, GEMINI_DIR, 'extensions');
+    userExtensionsDir = path.join(tempHomeDir, WOOCODE_DIR, 'extensions');
     vi.mocked(os.homedir).mockReturnValue(tempHomeDir);
     vi.spyOn(process, 'cwd').mockReturnValue(tempWorkspaceDir);
   });

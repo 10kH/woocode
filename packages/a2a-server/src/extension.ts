@@ -6,13 +6,13 @@
 
 // Copied exactly from packages/cli/src/config/extension.ts, last PR #1026
 
-import type { MCPServerConfig } from '@google/gemini-cli-core';
+import type { MCPServerConfig } from 'woocode-core';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
 import { logger } from './logger.js';
 
-export const EXTENSIONS_DIRECTORY_NAME = path.join('.gemini', 'extensions');
+export const EXTENSIONS_DIRECTORY_NAME = path.join('.woocode', 'extensions');
 export const EXTENSIONS_CONFIG_FILENAME = 'gemini-extension.json';
 
 export interface Extension {
@@ -110,7 +110,7 @@ function loadExtension(extensionDir: string): Extension | null {
 
 function getContextFileNames(config: ExtensionConfig): string[] {
   if (!config.contextFileName) {
-    return ['GEMINI.md'];
+    return ['WOOCODE.md'];
   } else if (!Array.isArray(config.contextFileName)) {
     return [config.contextFileName];
   }

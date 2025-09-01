@@ -37,7 +37,7 @@ import type {
 import { AuthType, createContentGenerator } from './contentGenerator.js';
 import { ProxyAgent, setGlobalDispatcher } from 'undici';
 import {
-  DEFAULT_GEMINI_FLASH_MODEL,
+  DEFAULT_WOOCODE_FLASH_MODEL,
   DEFAULT_THINKING_MODE,
 } from '../config/models.js';
 import { LoopDetectionService } from '../services/loopDetectionService.js';
@@ -587,7 +587,7 @@ export class GeminiClient {
   ): Promise<Record<string, unknown>> {
     // Use current model from config instead of hardcoded Flash model
     const modelToUse =
-      model || this.config.getModel() || DEFAULT_GEMINI_FLASH_MODEL;
+      model || this.config.getModel() || DEFAULT_WOOCODE_FLASH_MODEL;
     try {
       const userMemory = this.config.getUserMemory();
       const systemInstruction = getCoreSystemPrompt(userMemory);
@@ -934,7 +934,7 @@ export class GeminiClient {
     }
 
     const currentModel = this.config.getModel();
-    const fallbackModel = DEFAULT_GEMINI_FLASH_MODEL;
+    const fallbackModel = DEFAULT_WOOCODE_FLASH_MODEL;
 
     // Don't fallback if already using Flash model
     if (currentModel === fallbackModel) {

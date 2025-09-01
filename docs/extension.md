@@ -6,14 +6,14 @@ Gemini CLI supports extensions that can be used to configure and extend its func
 
 On startup, Gemini CLI looks for extensions in two locations:
 
-1.  `<workspace>/.gemini/extensions`
-2.  `<home>/.gemini/extensions`
+1.  `<workspace>/.woocode/extensions`
+2.  `<home>/.woocode/extensions`
 
 Gemini CLI loads all extensions from both locations. If an extension with the same name exists in both locations, the extension in the workspace directory takes precedence.
 
 Within each location, individual extensions exist as a directory that contains a `gemini-extension.json` file. For example:
 
-`<workspace>/.gemini/extensions/my-extension/gemini-extension.json`
+`<workspace>/.woocode/extensions/my-extension/gemini-extension.json`
 
 ### `gemini-extension.json`
 
@@ -50,7 +50,7 @@ Extensions can provide [custom commands](./cli/commands.md#custom-commands) by p
 An extension named `gcp` with the following structure:
 
 ```
-.gemini/extensions/gcp/
+.woocode/extensions/gcp/
 ├── gemini-extension.json
 └── commands/
     ├── deploy.toml
@@ -96,5 +96,5 @@ Gemini CLI extensions allow variable substitution in `gemini-extension.json`. Th
 
 | variable                   | description                                                                                                                                                     |
 | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `${extensionPath}`         | The fully-qualified path of the extension in the user's filesystem e.g., '/Users/username/.gemini/extensions/example-extension'. This will not unwrap symlinks. |
+| `${extensionPath}`         | The fully-qualified path of the extension in the user's filesystem e.g., '/Users/username/.woocode/extensions/example-extension'. This will not unwrap symlinks. |
 | `${/} or ${pathSeparator}` | The path separator (differs per OS).                                                                                                                            |

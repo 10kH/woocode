@@ -5,11 +5,11 @@
  */
 
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
-import type { Config } from '@google/gemini-cli-core';
+import type { Config } from 'woocode-core';
 import {
-  DEFAULT_GEMINI_FLASH_LITE_MODEL,
+  DEFAULT_WOOCODE_FLASH_LITE_MODEL,
   getResponseText,
-} from '@google/gemini-cli-core';
+} from 'woocode-core';
 import type { Content, GenerateContentConfig } from '@google/genai';
 import type { TextBuffer } from '../components/shared/text-buffer.js';
 import { isSlashCommand } from '../utils/commandUtils.js';
@@ -121,7 +121,7 @@ export function usePromptCompletion({
         contents,
         generationConfig,
         signal,
-        DEFAULT_GEMINI_FLASH_LITE_MODEL,
+        DEFAULT_WOOCODE_FLASH_LITE_MODEL,
       );
 
       if (signal.aborted) {

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AuthType } from '@google/gemini-cli-core';
+import { AuthType } from 'woocode-core';
 import { loadEnvironment, loadSettings } from './settings.js';
 
 export function validateAuthMethod(authMethod: string): string | null {
@@ -17,8 +17,8 @@ export function validateAuthMethod(authMethod: string): string | null {
   }
 
   if (authMethod === AuthType.USE_GEMINI) {
-    if (!process.env['GEMINI_API_KEY']) {
-      return 'GEMINI_API_KEY environment variable not found. Add that to your environment and try again (no reload needed if using .env)!';
+    if (!process.env['WOOCODE_API_KEY']) {
+      return 'WOOCODE_API_KEY environment variable not found. Add that to your environment and try again (no reload needed if using .env)!';
     }
     return null;
   }

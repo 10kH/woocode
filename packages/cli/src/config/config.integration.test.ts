@@ -11,8 +11,8 @@ import { tmpdir } from 'node:os';
 import type {
   ConfigParameters,
   ContentGeneratorConfig,
-} from '@google/gemini-cli-core';
-import { Config } from '@google/gemini-cli-core';
+} from 'woocode-core';
+import { Config } from 'woocode-core';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
@@ -40,8 +40,8 @@ const TEST_CONTENT_GENERATOR_CONFIG: ContentGeneratorConfig = {
 };
 
 // Mock file discovery service and tool registry
-vi.mock('@google/gemini-cli-core', async () => {
-  const actual = await vi.importActual('@google/gemini-cli-core');
+vi.mock('woocode-core', async () => {
+  const actual = await vi.importActual('woocode-core');
   return {
     ...actual,
     FileDiscoveryService: vi.fn().mockImplementation(() => ({
@@ -58,7 +58,7 @@ describe('Configuration Integration Tests', () => {
     server.resetHandlers(http.post(CLEARCUT_URL, () => HttpResponse.text()));
 
     tempDir = fs.mkdtempSync(path.join(tmpdir(), 'gemini-cli-test-'));
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('WOOCODE_API_KEY', 'test-api-key');
     vi.clearAllMocks();
   });
 

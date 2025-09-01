@@ -28,11 +28,11 @@ export interface LSToolParams {
   ignore?: string[];
 
   /**
-   * Whether to respect .gitignore and .geminiignore patterns (optional, defaults to true)
+   * Whether to respect .gitignore and .woocodeignore patterns (optional, defaults to true)
    */
   file_filtering_options?: {
     respect_git_ignore?: boolean;
-    respect_gemini_ignore?: boolean;
+    respect_woocode_ignore?: boolean;
   };
 }
 
@@ -160,9 +160,9 @@ class LSToolInvocation extends BaseToolInvocation<LSToolParams, ToolResult> {
         respectGitIgnore:
           this.params.file_filtering_options?.respect_git_ignore ??
           defaultFileIgnores.respectGitIgnore,
-        respectGeminiIgnore:
-          this.params.file_filtering_options?.respect_gemini_ignore ??
-          defaultFileIgnores.respectGeminiIgnore,
+        respectWoocodeIgnore:
+          this.params.file_filtering_options?.respect_woocode_ignore ??
+          defaultFileIgnores.respectWoocodeIgnore,
       };
 
       // Get centralized file discovery service
@@ -171,7 +171,7 @@ class LSToolInvocation extends BaseToolInvocation<LSToolParams, ToolResult> {
 
       const entries: FileEntry[] = [];
       let gitIgnoredCount = 0;
-      let geminiIgnoredCount = 0;
+      let woocodeIgnoredCount = 0;
 
       if (files.length === 0) {
         // Changed error message to be more neutral for LLM
@@ -192,7 +192,7 @@ class LSToolInvocation extends BaseToolInvocation<LSToolParams, ToolResult> {
           fullPath,
         );
 
-        // Check if this file should be ignored based on git or gemini ignore rules
+        // Check if this file should be ignored based on git or woocode ignore rules
         if (
           fileFilteringOptions.respectGitIgnore &&
           fileDiscovery.shouldGitIgnoreFile(relativePath)
@@ -201,10 +201,10 @@ class LSToolInvocation extends BaseToolInvocation<LSToolParams, ToolResult> {
           continue;
         }
         if (
-          fileFilteringOptions.respectGeminiIgnore &&
-          fileDiscovery.shouldGeminiIgnoreFile(relativePath)
+          fileFilteringOptions.respectWoocodeIgnore &&
+          fileDiscovery.shouldWoocodeIgnoreFile(relativePath)
         ) {
-          geminiIgnoredCount++;
+          woocodeIgnoredCount++;
           continue;
         }
 
@@ -241,8 +241,8 @@ class LSToolInvocation extends BaseToolInvocation<LSToolParams, ToolResult> {
       if (gitIgnoredCount > 0) {
         ignoredMessages.push(`${gitIgnoredCount} git-ignored`);
       }
-      if (geminiIgnoredCount > 0) {
-        ignoredMessages.push(`${geminiIgnoredCount} gemini-ignored`);
+      if (woocodeIgnoredCount > 0) {
+        ignoredMessages.push(`${woocodeIgnoredCount} woocode-ignored`);
       }
 
       if (ignoredMessages.length > 0) {
@@ -297,7 +297,7 @@ export class LSTool extends BaseDeclarativeTool<LSToolParams, ToolResult> {
           },
           file_filtering_options: {
             description:
-              'Optional: Whether to respect ignore patterns from .gitignore or .geminiignore',
+              'Optional: Whether to respect ignore patterns from .gitignore or .woocodeignore',
             type: 'object',
             properties: {
               respect_git_ignore: {
@@ -305,9 +305,9 @@ export class LSTool extends BaseDeclarativeTool<LSToolParams, ToolResult> {
                   'Optional: Whether to respect .gitignore patterns when listing files. Only available in git repositories. Defaults to true.',
                 type: 'boolean',
               },
-              respect_gemini_ignore: {
+              respect_woocode_ignore: {
                 description:
-                  'Optional: Whether to respect .geminiignore patterns when listing files. Defaults to true.',
+                  'Optional: Whether to respect .woocodeignore patterns when listing files. Defaults to true.',
                 type: 'boolean',
               },
             },

@@ -7,10 +7,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { getStartupWarnings } from './startupWarnings.js';
 import * as fs from 'node:fs/promises';
-import { getErrorMessage } from '@google/gemini-cli-core';
+import { getErrorMessage } from 'woocode-core';
 
 vi.mock('fs/promises');
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('woocode-core', async (importOriginal) => {
   const actual = await importOriginal();
   return {
     ...actual,

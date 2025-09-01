@@ -118,7 +118,7 @@ export class IdeClient {
     const configFromFile = await this.getConnectionConfigFromFile();
     const workspacePath =
       configFromFile?.workspacePath ??
-      process.env['GEMINI_CLI_IDE_WORKSPACE_PATH'];
+      process.env['WOOCODE_CLI_IDE_WORKSPACE_PATH'];
 
     const { isValid, error } = IdeClient.validateWorkspacePath(
       workspacePath,
@@ -339,7 +339,7 @@ export class IdeClient {
   }
 
   private getPortFromEnv(): string | undefined {
-    const port = process.env['GEMINI_CLI_IDE_SERVER_PORT'];
+    const port = process.env['WOOCODE_CLI_IDE_SERVER_PORT'];
     if (!port) {
       return undefined;
     }
@@ -347,12 +347,12 @@ export class IdeClient {
   }
 
   private getStdioConfigFromEnv(): StdioConfig | undefined {
-    const command = process.env['GEMINI_CLI_IDE_SERVER_STDIO_COMMAND'];
+    const command = process.env['WOOCODE_CLI_IDE_SERVER_STDIO_COMMAND'];
     if (!command) {
       return undefined;
     }
 
-    const argsStr = process.env['GEMINI_CLI_IDE_SERVER_STDIO_ARGS'];
+    const argsStr = process.env['WOOCODE_CLI_IDE_SERVER_STDIO_ARGS'];
     let args: string[] = [];
     if (argsStr) {
       try {
@@ -361,11 +361,11 @@ export class IdeClient {
           args = parsedArgs;
         } else {
           logger.error(
-            'GEMINI_CLI_IDE_SERVER_STDIO_ARGS must be a JSON array string.',
+            'WOOCODE_CLI_IDE_SERVER_STDIO_ARGS must be a JSON array string.',
           );
         }
       } catch (e) {
-        logger.error('Failed to parse GEMINI_CLI_IDE_SERVER_STDIO_ARGS:', e);
+        logger.error('Failed to parse WOOCODE_CLI_IDE_SERVER_STDIO_ARGS:', e);
       }
     }
 
@@ -381,7 +381,7 @@ export class IdeClient {
     try {
       const portFile = path.join(
         os.tmpdir(),
-        `gemini-ide-server-${this.ideProcessInfo.pid}.json`,
+        `woocode-ide-server-${this.ideProcessInfo.pid}.json`,
       );
       const portFileContents = await fs.promises.readFile(portFile, 'utf8');
       return JSON.parse(portFileContents);

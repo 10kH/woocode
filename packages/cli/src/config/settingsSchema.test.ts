@@ -100,7 +100,7 @@ describe('SettingsSchema', () => {
       ).toBeDefined();
       expect(
         SETTINGS_SCHEMA.context.properties.fileFiltering.properties
-          ?.respectGeminiIgnore,
+          ?.respectWoocodeIgnore,
       ).toBeDefined();
       expect(
         SETTINGS_SCHEMA.context.properties.fileFiltering.properties

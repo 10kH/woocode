@@ -42,7 +42,7 @@ import {
   type ChatCompressionInfo,
 } from './turn.js';
 import { getCoreSystemPrompt } from './prompts.js';
-import { DEFAULT_GEMINI_FLASH_MODEL } from '../config/models.js';
+import { DEFAULT_WOOCODE_FLASH_MODEL } from '../config/models.js';
 import { FileDiscoveryService } from '../services/fileDiscoveryService.js';
 import { setSimulate429 } from '../utils/testUtils.js';
 import { tokenLimit } from './tokenLimits.js';
@@ -2357,7 +2357,7 @@ ${JSON.stringify(
   describe('handleFlashFallback', () => {
     it('should use current model from config when checking for fallback', async () => {
       const initialModel = client['config'].getModel();
-      const fallbackModel = DEFAULT_GEMINI_FLASH_MODEL;
+      const fallbackModel = DEFAULT_WOOCODE_FLASH_MODEL;
 
       // mock config been changed
       const currentModel = initialModel + '-changed';

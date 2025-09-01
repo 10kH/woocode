@@ -44,7 +44,7 @@ Each Tuesday at UTC 2359 we will auto deploy a preview release of the next produ
 
 - This will happen as a scheduled instance of the ‘release’ action. It will be cut off of Main.
 - This will create a branch `release/vx.y.z-preview.n`
-- We will run evals and smoke testing against this branch and the npm package. For now this should be manual smoke testing, we don't have a dedicated matrix or specific detailed process. There is work coming soon to make this more formalized and automatic see https://github.com/google-gemini/gemini-cli/issues/3788
+- We will run evals and smoke testing against this branch and the npm package. For now this should be manual smoke testing, we don't have a dedicated matrix or specific detailed process. There is work coming soon to make this more formalized and automatic see https://github.com/woocode/woocode/issues/3788
 - Users installing `@preview` will get this release as well
 
 ## Promote Stable Release
@@ -54,7 +54,7 @@ After one week (On the following Tuesday) with all signals a go, we will manuall
 - The release action will be used with the source branch as `release/vx.y.z-preview.n`
 - The version will be x.y.z
 - The releaser will create and merge a pr into main with the version changes.
-- Smoke tests and manual validation will be run. For now this should be manual smoke testing, we don't have a dedicated matrix or specific detailed process. There is work coming soon to make this more formalized and automatic see https://github.com/google-gemini/gemini-cli/issues/3788
+- Smoke tests and manual validation will be run. For now this should be manual smoke testing, we don't have a dedicated matrix or specific detailed process. There is work coming soon to make this more formalized and automatic see https://github.com/woocode/woocode/issues/3788
 
 ## Patching Releases
 
@@ -82,7 +82,7 @@ First, create a new branch for your fix. The source for this branch depends on w
 
 ### 2. Implement the Fix
 
-In your new hotfix branch, either create a new commit with the fix or cherry-pick an existing commit from the `main` branch. Merge your changes into the source of the hotfix branch (ex. https://github.com/google-gemini/gemini-cli/pull/6850).
+In your new hotfix branch, either create a new commit with the fix or cherry-pick an existing commit from the `main` branch. Merge your changes into the source of the hotfix branch (ex. https://github.com/woocode/woocode/pull/6850).
 
 ### 3. Perform the Release
 
@@ -101,7 +101,7 @@ After the hotfix is released, merge the changes back to the appropriate branch.
   Open a pull request to merge the release branch (e.g., `release/0.2.1`) back into `main`. This keeps the version number in `main` up to date.
 
 - **For a preview release hotfix:**
-  Open a pull request to merge the new preview release branch (e.g., `release/v0.2.0-preview.1`) back into the existing preview release branch (`release/v0.2.0-preview.0`) (ex. https://github.com/google-gemini/gemini-cli/pull/6868)
+  Open a pull request to merge the new preview release branch (e.g., `release/v0.2.0-preview.1`) back into the existing preview release branch (`release/v0.2.0-preview.0`) (ex. https://github.com/woocode/woocode/pull/6868)
 
 ## Release Schedule
 
@@ -166,7 +166,7 @@ After the hotfix is released, merge the changes back to the appropriate branch.
 
 ## How To Release
 
-Releases are managed through the [release.yml](https://github.com/google-gemini/gemini-cli/actions/workflows/release.yml) GitHub Actions workflow. To perform a manual release for a patch or hotfix:
+Releases are managed through the [release.yml](https://github.com/woocode/woocode/actions/workflows/release.yml) GitHub Actions workflow. To perform a manual release for a patch or hotfix:
 
 1.  Navigate to the **Actions** tab of the repository.
 2.  Select the **Release** workflow from the list.
@@ -211,7 +211,7 @@ After pushing a new release smoke testing should be performed to ensure that the
 
 If you need to test the release process without actually publishing to NPM or creating a public GitHub release, you can trigger the workflow manually from the GitHub UI.
 
-1.  Go to the [Actions tab](https://github.com/google-gemini/gemini-cli/actions/workflows/release.yml) of the repository.
+1.  Go to the [Actions tab](https://github.com/woocode/woocode/actions/workflows/release.yml) of the repository.
 2.  Click on the "Run workflow" dropdown.
 3.  Leave the `dry_run` option checked (`true`).
 4.  Click the "Run workflow" button.

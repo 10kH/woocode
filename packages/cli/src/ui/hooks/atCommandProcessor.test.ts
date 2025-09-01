@@ -7,7 +7,7 @@
 import type { Mock } from 'vitest';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { handleAtCommand } from './atCommandProcessor.js';
-import type { Config } from '@google/gemini-cli-core';
+import type { Config } from 'woocode-core';
 import {
   FileDiscoveryService,
   GlobTool,
@@ -16,7 +16,7 @@ import {
   ToolRegistry,
   COMMON_IGNORE_PATTERNS,
   DEFAULT_FILE_EXCLUDES,
-} from '@google/gemini-cli-core';
+} from 'woocode-core';
 import * as os from 'node:os';
 import { ToolCallStatus } from '../types.js';
 import type { UseHistoryManagerReturn } from './useHistoryManager.js';
@@ -581,7 +581,7 @@ describe('handleAtCommand', () => {
   describe('gemini-ignore filtering', () => {
     it('should skip gemini-ignored files in @ commands', async () => {
       await createTestFile(
-        path.join(testRootDir, '.geminiignore'),
+        path.join(testRootDir, '.woocodeignore'),
         'build/output.js',
       );
       const geminiIgnoredFile = await createTestFile(
@@ -611,9 +611,9 @@ describe('handleAtCommand', () => {
       );
     });
   });
-  it('should process non-ignored files when .geminiignore is present', async () => {
+  it('should process non-ignored files when .woocodeignore is present', async () => {
     await createTestFile(
-      path.join(testRootDir, '.geminiignore'),
+      path.join(testRootDir, '.woocodeignore'),
       'build/output.js',
     );
     const validFile = await createTestFile(
@@ -645,7 +645,7 @@ describe('handleAtCommand', () => {
 
   it('should handle mixed gemini-ignored and valid files', async () => {
     await createTestFile(
-      path.join(testRootDir, '.geminiignore'),
+      path.join(testRootDir, '.woocodeignore'),
       'dist/bundle.js',
     );
     const validFile = await createTestFile(

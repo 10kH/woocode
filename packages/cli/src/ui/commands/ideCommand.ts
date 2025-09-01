@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import type { Config, IdeClient, File } from '@google/gemini-cli-core';
+import type { Config, IdeClient, File } from 'woocode-core';
 import {
   getIdeInstaller,
   IDEConnectionStatus,
   ideContext,
-  GEMINI_CLI_COMPANION_EXTENSION_NAME,
-} from '@google/gemini-cli-core';
+  WOOCODE_CLI_COMPANION_EXTENSION_NAME,
+} from 'woocode-core';
 import path from 'node:path';
 import type {
   CommandContext,
@@ -163,7 +163,7 @@ export const ideCommand = (config: Config | null): SlashCommand | null => {
         context.ui.addItem(
           {
             type: 'error',
-            text: `No installer is available for ${ideClient.getDetectedIdeDisplayName()}. Please install the '${GEMINI_CLI_COMPANION_EXTENSION_NAME}' extension manually from the marketplace.`,
+            text: `No installer is available for ${ideClient.getDetectedIdeDisplayName()}. Please install the '${WOOCODE_CLI_COMPANION_EXTENSION_NAME}' extension manually from the marketplace.`,
           },
           Date.now(),
         );

@@ -10,7 +10,7 @@ import type {
   TelemetrySettings,
   AuthType,
   ChatCompressionSettings,
-} from '@google/gemini-cli-core';
+} from 'woocode-core';
 import type { CustomTheme } from '../ui/themes/theme.js';
 
 export interface SettingDefinition {
@@ -49,6 +49,65 @@ export const SETTINGS_SCHEMA = {
     default: {} as Record<string, MCPServerConfig>,
     description: 'Configuration for MCP servers.',
     showInDialog: false,
+  },
+
+  provider: {
+    type: 'string',
+    label: 'LLM Provider',
+    category: 'Model',
+    requiresRestart: true,
+    default: 'huggingface' as string,
+    description: 'LLM provider to use (huggingface, ollama, openai, anthropic, gemini)',
+    showInDialog: true,
+  },
+
+  useProviderSystem: {
+    type: 'boolean',
+    label: 'Use Provider System',
+    category: 'Model',
+    requiresRestart: true,
+    default: true,
+    description: 'Enable new provider system for local models',
+    showInDialog: false,
+  },
+  
+  apiKeys: {
+    type: 'object',
+    label: 'API Keys',
+    category: 'Model',
+    requiresRestart: true,
+    default: {},
+    description: 'API keys for cloud providers',
+    showInDialog: false,
+    properties: {
+      openai: {
+        type: 'string',
+        label: 'OpenAI API Key',
+        category: 'Model',
+        requiresRestart: true,
+        default: undefined as string | undefined,
+        description: 'API key for OpenAI (GPT-4, GPT-3.5)',
+        showInDialog: false,
+      },
+      anthropic: {
+        type: 'string',
+        label: 'Anthropic API Key',
+        category: 'Model',
+        requiresRestart: true,
+        default: undefined as string | undefined,
+        description: 'API key for Anthropic (Claude)',
+        showInDialog: false,
+      },
+      gemini: {
+        type: 'string',
+        label: 'Gemini API Key',
+        category: 'Model',
+        requiresRestart: true,
+        default: undefined as string | undefined,
+        description: 'API key for Google Gemini',
+        showInDialog: false,
+      },
+    },
   },
 
   general: {
@@ -455,13 +514,13 @@ export const SETTINGS_SCHEMA = {
             description: 'Respect .gitignore files when searching',
             showInDialog: true,
           },
-          respectGeminiIgnore: {
+          respectWoocodeIgnore: {
             type: 'boolean',
-            label: 'Respect .geminiignore',
+            label: 'Respect .woocodeignore',
             category: 'Context',
             requiresRestart: true,
             default: true,
-            description: 'Respect .geminiignore files when searching',
+            description: 'Respect .woocodeignore files when searching',
             showInDialog: true,
           },
           enableRecursiveFileSearch: {

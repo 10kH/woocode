@@ -5,7 +5,7 @@
  */
 
 import * as vscode from 'vscode';
-import { IdeContextNotificationSchema } from '@google/gemini-cli-core';
+import { IdeContextNotificationSchema } from 'woocode-core';
 import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
@@ -20,8 +20,8 @@ import type { DiffManager } from './diff-manager.js';
 import { OpenFilesManager } from './open-files-manager.js';
 
 const MCP_SESSION_ID_HEADER = 'mcp-session-id';
-const IDE_SERVER_PORT_ENV_VAR = 'GEMINI_CLI_IDE_SERVER_PORT';
-const IDE_WORKSPACE_PATH_ENV_VAR = 'GEMINI_CLI_IDE_WORKSPACE_PATH';
+const IDE_SERVER_PORT_ENV_VAR = 'WOOCODE_CLI_IDE_SERVER_PORT';
+const IDE_WORKSPACE_PATH_ENV_VAR = 'WOOCODE_CLI_IDE_WORKSPACE_PATH';
 
 async function writePortAndWorkspace(
   context: vscode.ExtensionContext,
@@ -240,11 +240,11 @@ export class IDEServer {
           this.port = address.port;
           this.portFile = path.join(
             os.tmpdir(),
-            `gemini-ide-server-${this.port}.json`,
+            `woocode-ide-server-${this.port}.json`,
           );
           this.ppidPortFile = path.join(
             os.tmpdir(),
-            `gemini-ide-server-${process.ppid}.json`,
+            `woocode-ide-server-${process.ppid}.json`,
           );
           this.log(`IDE server listening on port ${this.port}`);
           await writePortAndWorkspace(

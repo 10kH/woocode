@@ -48,6 +48,8 @@ import { RadioButtonSelect } from './components/shared/RadioButtonSelect.js';
 import { Colors } from './colors.js';
 import { loadHierarchicalGeminiMemory } from '../config/config.js';
 import type { LoadedSettings } from '../config/settings.js';
+// import { ModelSelector, ModelDownloadProgress } from './ModelSelector.js';
+import { ModelDownloadProgress } from './ModelSelector.js';
 import { SettingScope } from '../config/settings.js';
 import { Tips } from './components/Tips.js';
 import { ConsolePatcher } from './utils/ConsolePatcher.js';
@@ -58,7 +60,7 @@ import { ContextSummaryDisplay } from './components/ContextSummaryDisplay.js';
 import { useHistory } from './hooks/useHistoryManager.js';
 import { useInputHistoryStore } from './hooks/useInputHistoryStore.js';
 import process from 'node:process';
-import type { EditorType, Config, IdeContext } from '@google/gemini-cli-core';
+import type { EditorType, Config, IdeContext } from 'woocode-core';
 import {
   ApprovalMode,
   getAllGeminiMdFilenames,
@@ -71,8 +73,8 @@ import {
   isProQuotaExceededError,
   isGenericQuotaExceededError,
   UserTierId,
-  DEFAULT_GEMINI_FLASH_MODEL,
-} from '@google/gemini-cli-core';
+  DEFAULT_WOOCODE_FLASH_MODEL,
+} from 'woocode-core';
 import type { IdeIntegrationNudgeResult } from './IdeIntegrationNudge.js';
 import { IdeIntegrationNudge } from './IdeIntegrationNudge.js';
 import { validateAuthMethod } from '../config/auth.js';
@@ -231,6 +233,12 @@ const App = ({ config, settings, startupWarnings = [], version }: AppProps) => {
   >();
   const [showEscapePrompt, setShowEscapePrompt] = useState(false);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [showModelSelector, setShowModelSelector] = useState<boolean>(false);
+  const [modelDownloadProgress, _setModelDownloadProgress] = useState<{
+    modelName: string;
+    progress: number;
+    status: string;
+  } | null>(null);
 
   const {
     showWorkspaceMigrationDialog,
@@ -248,6 +256,12 @@ const App = ({ config, settings, startupWarnings = [], version }: AppProps) => {
     const unsubscribe = ideContext.subscribeToIdeContext(setIdeContextState);
     // Set the initial value
     setIdeContextState(ideContext.getIdeContext());
+    
+    // Check if using provider system on startup
+    if (config.isUsingProviderSystem() && !config.getProviderAdapter()) {
+      setShowModelSelector(true);
+    }
+    
     return unsubscribe;
   }, []);
 
@@ -1062,7 +1076,19 @@ const App = ({ config, settings, startupWarnings = [], version }: AppProps) => {
               ))}
             </Box>
           )}
-          {showWorkspaceMigrationDialog ? (
+          {showModelSelector ? (
+            // ModelSelector disabled - use --provider flag instead
+            <Box flexDirection="column">
+              <Text color="yellow">Model selector is currently disabled.</Text>
+              <Text>Use --provider flag or settings to select provider.</Text>
+            </Box>
+          ) : modelDownloadProgress ? (
+            <ModelDownloadProgress
+              modelName={modelDownloadProgress.modelName}
+              progress={modelDownloadProgress.progress}
+              status={modelDownloadProgress.status}
+            />
+          ) : showWorkspaceMigrationDialog ? (
             <WorkspaceMigrationDialog
               workspaceExtensions={workspaceExtensions}
               onOpen={onWorkspaceMigrationDialogOpen}
@@ -1076,7 +1102,7 @@ const App = ({ config, settings, startupWarnings = [], version }: AppProps) => {
           ) : isProQuotaDialogOpen ? (
             <ProQuotaDialog
               currentModel={config.getModel()}
-              fallbackModel={DEFAULT_GEMINI_FLASH_MODEL}
+              fallbackModel={DEFAULT_WOOCODE_FLASH_MODEL}
               onChoice={(choice) => {
                 setIsProQuotaDialogOpen(false);
                 if (!proQuotaDialogResolver) return;

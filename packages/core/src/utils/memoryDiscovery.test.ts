@@ -14,7 +14,7 @@ import {
   DEFAULT_CONTEXT_FILENAME,
 } from '../tools/memoryTool.js';
 import { FileDiscoveryService } from '../services/fileDiscoveryService.js';
-import { GEMINI_DIR } from './paths.js';
+import { WOOCODE_DIR } from './paths.js';
 
 vi.mock('os', async (importOriginal) => {
   const actualOs = await importOriginal<typeof os>();
@@ -98,7 +98,7 @@ describe('loadServerHierarchicalMemory', () => {
         'Src directory memory',
       ); // Untrusted
 
-      const filepath = path.join(homedir, GEMINI_DIR, DEFAULT_CONTEXT_FILENAME);
+      const filepath = path.join(homedir, WOOCODE_DIR, DEFAULT_CONTEXT_FILENAME);
       await createTestFile(filepath, 'default context content'); // In user home dir (outside untrusted space).
       const { fileCount, memoryContent } = await loadServerHierarchicalMemory(
         cwd,
@@ -132,7 +132,7 @@ describe('loadServerHierarchicalMemory', () => {
 
   it('should load only the global context file if present and others are not (default filename)', async () => {
     const defaultContextFile = await createTestFile(
-      path.join(homedir, GEMINI_DIR, DEFAULT_CONTEXT_FILENAME),
+      path.join(homedir, WOOCODE_DIR, DEFAULT_CONTEXT_FILENAME),
       'default context content',
     );
 
@@ -156,7 +156,7 @@ describe('loadServerHierarchicalMemory', () => {
     setGeminiMdFilename(customFilename);
 
     const customContextFile = await createTestFile(
-      path.join(homedir, GEMINI_DIR, customFilename),
+      path.join(homedir, WOOCODE_DIR, customFilename),
       'custom context content',
     );
 
@@ -228,7 +228,7 @@ describe('loadServerHierarchicalMemory', () => {
     });
   });
 
-  it('should load ORIGINAL_GEMINI_MD_FILENAME files by upward traversal from CWD to project root', async () => {
+  it('should load ORIGINAL_WOOCODE_MD_FILENAME files by upward traversal from CWD to project root', async () => {
     const projectRootGeminiFile = await createTestFile(
       path.join(projectRoot, DEFAULT_CONTEXT_FILENAME),
       'Project root memory',
@@ -253,7 +253,7 @@ describe('loadServerHierarchicalMemory', () => {
     });
   });
 
-  it('should load ORIGINAL_GEMINI_MD_FILENAME files by downward traversal from CWD', async () => {
+  it('should load ORIGINAL_WOOCODE_MD_FILENAME files by downward traversal from CWD', async () => {
     await createTestFile(
       path.join(cwd, 'subdir', DEFAULT_CONTEXT_FILENAME),
       'Subdir memory',
@@ -278,9 +278,9 @@ describe('loadServerHierarchicalMemory', () => {
     });
   });
 
-  it('should load and correctly order global, upward, and downward ORIGINAL_GEMINI_MD_FILENAME files', async () => {
+  it('should load and correctly order global, upward, and downward ORIGINAL_WOOCODE_MD_FILENAME files', async () => {
     const defaultContextFile = await createTestFile(
-      path.join(homedir, GEMINI_DIR, DEFAULT_CONTEXT_FILENAME),
+      path.join(homedir, WOOCODE_DIR, DEFAULT_CONTEXT_FILENAME),
       'default context content',
     );
     const rootGeminiFile = await createTestFile(
@@ -338,7 +338,7 @@ describe('loadServerHierarchicalMemory', () => {
       'tree',
       {
         respectGitIgnore: true,
-        respectGeminiIgnore: true,
+        respectWoocodeIgnore: true,
       },
       200, // maxDirs parameter
     );
@@ -369,7 +369,7 @@ describe('loadServerHierarchicalMemory', () => {
       'tree', // importFormat
       {
         respectGitIgnore: true,
-        respectGeminiIgnore: true,
+        respectWoocodeIgnore: true,
       },
       50, // maxDirs
     );
@@ -398,7 +398,7 @@ describe('loadServerHierarchicalMemory', () => {
 
   it('should load extension context file paths', async () => {
     const extensionFilePath = await createTestFile(
-      path.join(testRootDir, 'extensions/ext1/GEMINI.md'),
+      path.join(testRootDir, 'extensions/ext1/WOOCODE.md'),
       'Extension memory content',
     );
 
@@ -442,7 +442,7 @@ describe('loadServerHierarchicalMemory', () => {
   });
 
   it('should handle multiple directories and files in parallel correctly', async () => {
-    // Create multiple test directories with GEMINI.md files
+    // Create multiple test directories with WOOCODE.md files
     const numDirs = 5;
     const createdFiles: string[] = [];
 

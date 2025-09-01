@@ -8,7 +8,7 @@ import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { listMcpServers } from './list.js';
 import { loadSettings } from '../../config/settings.js';
 import { loadExtensions } from '../../config/extension.js';
-import { createTransport } from '@google/gemini-cli-core';
+import { createTransport } from 'woocode-core';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 
 vi.mock('../../config/settings.js', () => ({
@@ -17,7 +17,7 @@ vi.mock('../../config/settings.js', () => ({
 vi.mock('../../config/extension.js', () => ({
   loadExtensions: vi.fn(),
 }));
-vi.mock('@google/gemini-cli-core', () => ({
+vi.mock('woocode-core', () => ({
   createTransport: vi.fn(),
   MCPServerStatus: {
     CONNECTED: 'CONNECTED',
@@ -27,9 +27,9 @@ vi.mock('@google/gemini-cli-core', () => ({
   Storage: vi.fn().mockImplementation((_cwd: string) => ({
     getGlobalSettingsPath: () => '/tmp/gemini/settings.json',
     getWorkspaceSettingsPath: () => '/tmp/gemini/workspace-settings.json',
-    getProjectTempDir: () => '/test/home/.gemini/tmp/mocked_hash',
+    getProjectTempDir: () => '/test/home/.woocode/tmp/mocked_hash',
   })),
-  GEMINI_CONFIG_DIR: '.gemini',
+  WOOCODE_CONFIG_DIR: '.woocode',
   getErrorMessage: (e: unknown) => (e instanceof Error ? e.message : String(e)),
 }));
 vi.mock('@modelcontextprotocol/sdk/client/index.js');

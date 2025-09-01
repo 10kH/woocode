@@ -28,6 +28,7 @@ import { MemoryTool, setGeminiMdFilename } from '../tools/memoryTool.js';
 import { WebSearchTool } from '../tools/web-search.js';
 import { GeminiClient } from '../core/client.js';
 import { FileDiscoveryService } from '../services/fileDiscoveryService.js';
+import { ProviderAdapter } from '../providers/adapter.js';
 import { GitService } from '../services/gitService.js';
 import type { TelemetryTarget } from '../telemetry/index.js';
 import {
@@ -37,8 +38,8 @@ import {
 } from '../telemetry/index.js';
 import { StartSessionEvent } from '../telemetry/index.js';
 import {
-  DEFAULT_GEMINI_EMBEDDING_MODEL,
-  DEFAULT_GEMINI_FLASH_MODEL,
+  DEFAULT_WOOCODE_EMBEDDING_MODEL,
+  DEFAULT_WOOCODE_FLASH_MODEL,
 } from './models.js';
 import { shouldAttemptBrowserLaunch } from '../utils/browser.js';
 import type { MCPOAuthConfig } from '../mcp/oauth-provider.js';
@@ -97,17 +98,17 @@ export interface GeminiCLIExtension {
 }
 export interface FileFilteringOptions {
   respectGitIgnore: boolean;
-  respectGeminiIgnore: boolean;
+  respectWoocodeIgnore: boolean;
 }
 // For memory files
 export const DEFAULT_MEMORY_FILE_FILTERING_OPTIONS: FileFilteringOptions = {
   respectGitIgnore: false,
-  respectGeminiIgnore: true,
+  respectWoocodeIgnore: true,
 };
 // For all other files
 export const DEFAULT_FILE_FILTERING_OPTIONS: FileFilteringOptions = {
   respectGitIgnore: true,
-  respectGeminiIgnore: true,
+  respectWoocodeIgnore: true,
 };
 export class MCPServerConfig {
   constructor(
@@ -169,16 +170,18 @@ export interface ConfigParameters {
   mcpServerCommand?: string;
   mcpServers?: Record<string, MCPServerConfig>;
   userMemory?: string;
-  geminiMdFileCount?: number;
+  woocodeMdFileCount?: number;
   approvalMode?: ApprovalMode;
   showMemoryUsage?: boolean;
   contextFileName?: string | string[];
   accessibility?: AccessibilitySettings;
+  provider?: string;  // Provider selection (huggingface, ollama, google)
+  useProviderSystem?: boolean;  // Enable new provider system
   telemetry?: TelemetrySettings;
   usageStatisticsEnabled?: boolean;
   fileFiltering?: {
     respectGitIgnore?: boolean;
-    respectGeminiIgnore?: boolean;
+    respectWoocodeIgnore?: boolean;
     enableRecursiveFileSearch?: boolean;
     disableFuzzySearch?: boolean;
   };
@@ -234,16 +237,17 @@ export class Config {
   private readonly mcpServerCommand: string | undefined;
   private readonly mcpServers: Record<string, MCPServerConfig> | undefined;
   private userMemory: string;
-  private geminiMdFileCount: number;
+  private woocodeMdFileCount: number;
   private approvalMode: ApprovalMode;
   private readonly showMemoryUsage: boolean;
   private readonly accessibility: AccessibilitySettings;
   private readonly telemetrySettings: TelemetrySettings;
   private readonly usageStatisticsEnabled: boolean;
-  private geminiClient!: GeminiClient;
+  private woocodeClient!: GeminiClient;
+  private providerAdapter?: ProviderAdapter;
   private readonly fileFiltering: {
     respectGitIgnore: boolean;
-    respectGeminiIgnore: boolean;
+    respectWoocodeIgnore: boolean;
     enableRecursiveFileSearch: boolean;
     disableFuzzySearch: boolean;
   };
@@ -259,6 +263,8 @@ export class Config {
   private readonly folderTrustFeature: boolean;
   private readonly folderTrust: boolean;
   private ideMode: boolean;
+  private readonly useProviderSystem: boolean;
+  private readonly parameters: ConfigParameters;
   private ideClient!: IdeClient;
   private inFallbackMode = false;
   private readonly maxSessionTurns: number;
@@ -290,9 +296,11 @@ export class Config {
   private readonly useSmartEdit: boolean;
 
   constructor(params: ConfigParameters) {
+    this.parameters = params;
     this.sessionId = params.sessionId;
+    this.useProviderSystem = params.useProviderSystem ?? false;
     this.embeddingModel =
-      params.embeddingModel ?? DEFAULT_GEMINI_EMBEDDING_MODEL;
+      params.embeddingModel ?? DEFAULT_WOOCODE_EMBEDDING_MODEL;
     this.fileSystemService = new StandardFileSystemService();
     this.sandbox = params.sandbox;
     this.targetDir = path.resolve(params.targetDir);
@@ -311,7 +319,7 @@ export class Config {
     this.mcpServerCommand = params.mcpServerCommand;
     this.mcpServers = params.mcpServers;
     this.userMemory = params.userMemory ?? '';
-    this.geminiMdFileCount = params.geminiMdFileCount ?? 0;
+    this.woocodeMdFileCount = params.woocodeMdFileCount ?? 0;
     this.approvalMode = params.approvalMode ?? ApprovalMode.DEFAULT;
     this.showMemoryUsage = params.showMemoryUsage ?? false;
     this.accessibility = params.accessibility ?? {};
@@ -327,7 +335,7 @@ export class Config {
 
     this.fileFiltering = {
       respectGitIgnore: params.fileFiltering?.respectGitIgnore ?? true,
-      respectGeminiIgnore: params.fileFiltering?.respectGeminiIgnore ?? true,
+      respectWoocodeIgnore: params.fileFiltering?.respectWoocodeIgnore ?? true,
       enableRecursiveFileSearch:
         params.fileFiltering?.enableRecursiveFileSearch ?? true,
       disableFuzzySearch: params.fileFiltering?.disableFuzzySearch ?? false,
@@ -390,14 +398,40 @@ export class Config {
     }
     this.promptRegistry = new PromptRegistry();
     this.toolRegistry = await this.createToolRegistry();
+    
+    // Initialize provider adapter if provider mode is enabled
+    if (this.useProviderSystem) {
+      await this.initializeProviderAdapter();
+    }
+    
     logCliConfiguration(this, new StartSessionEvent(this, this.toolRegistry));
+  }
+  
+  /**
+   * Initialize the provider adapter system
+   */
+  async initializeProviderAdapter(): Promise<void> {
+    this.providerAdapter = new ProviderAdapter(this);
+    
+    // Get provider preference from config or environment
+    const preferredProvider = process.env['WOOCODE_PROVIDER'] || 
+                             this.parameters.provider || 
+                             'huggingface';
+    
+    try {
+      await this.providerAdapter.initialize(preferredProvider);
+      console.log(`Initialized provider: ${preferredProvider}`);
+    } catch (error) {
+      console.log(`Failed to initialize ${preferredProvider}, falling back to auto-detect`);
+      await this.providerAdapter.initialize();
+    }
   }
 
   async refreshAuth(authMethod: AuthType) {
     // Save the current conversation history before creating a new client
     let existingHistory: Content[] = [];
-    if (this.geminiClient && this.geminiClient.isInitialized()) {
-      existingHistory = this.geminiClient.getHistory();
+    if (this.woocodeClient && this.woocodeClient.isInitialized()) {
+      existingHistory = this.woocodeClient.getHistory();
     }
 
     // Create new content generator config
@@ -418,11 +452,11 @@ export class Config {
 
     // Only assign to instance properties after successful initialization
     this.contentGeneratorConfig = newContentGeneratorConfig;
-    this.geminiClient = newGeminiClient;
+    this.woocodeClient = newGeminiClient;
 
     // Restore the conversation history to the new client
     if (existingHistory.length > 0) {
-      this.geminiClient.setHistory(existingHistory, {
+      this.woocodeClient.setHistory(existingHistory, {
         stripThoughts: fromGenaiToVertex,
       });
     }
@@ -564,11 +598,11 @@ export class Config {
   }
 
   getGeminiMdFileCount(): number {
-    return this.geminiMdFileCount;
+    return this.woocodeMdFileCount;
   }
 
   setGeminiMdFileCount(count: number): void {
-    this.geminiMdFileCount = count;
+    this.woocodeMdFileCount = count;
   }
 
   getApprovalMode(): ApprovalMode {
@@ -617,7 +651,15 @@ export class Config {
   }
 
   getGeminiClient(): GeminiClient {
-    return this.geminiClient;
+    return this.woocodeClient;
+  }
+  
+  getProviderAdapter(): ProviderAdapter | undefined {
+    return this.providerAdapter;
+  }
+  
+  isUsingProviderSystem(): boolean {
+    return this.useProviderSystem;
   }
 
   getEnableRecursiveFileSearch(): boolean {
@@ -631,14 +673,14 @@ export class Config {
   getFileFilteringRespectGitIgnore(): boolean {
     return this.fileFiltering.respectGitIgnore;
   }
-  getFileFilteringRespectGeminiIgnore(): boolean {
-    return this.fileFiltering.respectGeminiIgnore;
+  getFileFilteringRespectWoocodeIgnore(): boolean {
+    return this.fileFiltering.respectWoocodeIgnore;
   }
 
   getFileFilteringOptions(): FileFilteringOptions {
     return {
       respectGitIgnore: this.fileFiltering.respectGitIgnore,
-      respectGeminiIgnore: this.fileFiltering.respectGeminiIgnore,
+      respectWoocodeIgnore: this.fileFiltering.respectWoocodeIgnore,
     };
   }
 
@@ -890,4 +932,4 @@ export class Config {
   }
 }
 // Export model constants for use in CLI
-export { DEFAULT_GEMINI_FLASH_MODEL };
+export { DEFAULT_WOOCODE_FLASH_MODEL };

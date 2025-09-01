@@ -15,11 +15,11 @@ import {
 } from 'vitest';
 import * as os from 'node:os';
 import * as path from 'node:path';
-import { ShellTool, EditTool, WriteFileTool } from '@google/gemini-cli-core';
+import { ShellTool, EditTool, WriteFileTool } from 'woocode-core';
 import { loadCliConfig, parseArguments, type CliArgs } from './config.js';
 import type { Settings } from './settings.js';
 import type { Extension } from './extension.js';
-import * as ServerConfig from '@google/gemini-cli-core';
+import * as ServerConfig from 'woocode-core';
 import { isWorkspaceTrusted } from './trustedFolders.js';
 
 vi.mock('./trustedFolders.js', () => ({
@@ -76,9 +76,9 @@ vi.mock('read-package-up', () => ({
   ),
 }));
 
-vi.mock('@google/gemini-cli-core', async () => {
+vi.mock('woocode-core', async () => {
   const actualServer = await vi.importActual<typeof ServerConfig>(
-    '@google/gemini-cli-core',
+    'woocode-core',
   );
   return {
     ...actualServer,
@@ -305,7 +305,7 @@ describe('loadCliConfig', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('WOOCODE_API_KEY', 'test-api-key');
   });
 
   afterEach(() => {
@@ -447,7 +447,7 @@ describe('loadCliConfig telemetry', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('WOOCODE_API_KEY', 'test-api-key');
   });
 
   afterEach(() => {
@@ -689,7 +689,7 @@ describe('Hierarchical Memory Loading (config.ts) - Placeholder Suite', () => {
           name: 'ext1',
           version: '1.0.0',
         },
-        contextFiles: ['/path/to/ext1/GEMINI.md'],
+        contextFiles: ['/path/to/ext1/WOOCODE.md'],
       },
       {
         path: '/path/to/ext2',
@@ -719,7 +719,7 @@ describe('Hierarchical Memory Loading (config.ts) - Placeholder Suite', () => {
       false,
       expect.any(Object),
       [
-        '/path/to/ext1/GEMINI.md',
+        '/path/to/ext1/WOOCODE.md',
         '/path/to/ext3/context1.md',
         '/path/to/ext3/context2.md',
       ],
@@ -742,10 +742,10 @@ describe('Hierarchical Memory Loading (config.ts) - Placeholder Suite', () => {
   // 3. Spies on console functions (for logger output) are correctly set up if needed.
   // Example of a previously failing test structure:
   it.skip('should correctly use mocked homedir for global path', async () => {
-    const MOCK_GEMINI_DIR_LOCAL = path.join('/mock/home/user', '.gemini');
+    const MOCK_WOOCODE_DIR_LOCAL = path.join('/mock/home/user', '.woocode');
     const MOCK_GLOBAL_PATH_LOCAL = path.join(
-      MOCK_GEMINI_DIR_LOCAL,
-      'GEMINI.md',
+      MOCK_WOOCODE_DIR_LOCAL,
+      'WOOCODE.md',
     );
     mockFs({
       [MOCK_GLOBAL_PATH_LOCAL]: { type: 'file', content: 'GlobalContentOnly' },
@@ -1215,7 +1215,7 @@ describe('loadCliConfig with allowed-mcp-server-names', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('WOOCODE_API_KEY', 'test-api-key');
   });
 
   afterEach(() => {
@@ -1498,7 +1498,7 @@ describe('loadCliConfig folderTrustFeature', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('WOOCODE_API_KEY', 'test-api-key');
   });
 
   afterEach(() => {
@@ -1532,7 +1532,7 @@ describe('loadCliConfig folderTrust', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('WOOCODE_API_KEY', 'test-api-key');
   });
 
   afterEach(() => {
@@ -1608,7 +1608,7 @@ describe('loadCliConfig with includeDirectories', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('WOOCODE_API_KEY', 'test-api-key');
     vi.spyOn(process, 'cwd').mockReturnValue(
       path.resolve(path.sep, 'home', 'user', 'project'),
     );
@@ -1662,7 +1662,7 @@ describe('loadCliConfig chatCompression', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('WOOCODE_API_KEY', 'test-api-key');
   });
 
   afterEach(() => {
@@ -1702,7 +1702,7 @@ describe('loadCliConfig useRipgrep', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('WOOCODE_API_KEY', 'test-api-key');
   });
 
   afterEach(() => {
@@ -1743,7 +1743,7 @@ describe('loadCliConfig tool exclusions', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('WOOCODE_API_KEY', 'test-api-key');
     process.stdin.isTTY = true;
     vi.mocked(isWorkspaceTrusted).mockReturnValue(true);
   });
@@ -1803,7 +1803,7 @@ describe('loadCliConfig interactive', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('WOOCODE_API_KEY', 'test-api-key');
     process.stdin.isTTY = true;
   });
 
@@ -1853,7 +1853,7 @@ describe('loadCliConfig approval mode', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('WOOCODE_API_KEY', 'test-api-key');
     process.argv = ['node', 'script.js']; // Reset argv for each test
     vi.mocked(isWorkspaceTrusted).mockReturnValue(true);
   });
@@ -1966,7 +1966,7 @@ describe('loadCliConfig trustedFolder', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('WOOCODE_API_KEY', 'test-api-key');
     process.argv = ['node', 'script.js']; // Reset argv for each test
   });
 

@@ -34,7 +34,7 @@ permissions:
 jobs:
   triage-issue:
     if: |-
-      github.repository == 'google-gemini/gemini-cli' &&
+      github.repository == 'woocode/woocode' &&
       (
         github.event_name == 'workflow_dispatch' ||
         (
@@ -118,7 +118,7 @@ jobs:
           gcp_project_id: '${{ vars.GOOGLE_CLOUD_PROJECT }}'
           gcp_location: '${{ vars.GOOGLE_CLOUD_LOCATION }}'
           gcp_service_account: '${{ vars.SERVICE_ACCOUNT_EMAIL }}'
-          gemini_api_key: '${{ secrets.GEMINI_API_KEY }}'
+          gemini_api_key: '${{ secrets.WOOCODE_API_KEY }}'
           use_vertex_ai: '${{ vars.GOOGLE_GENAI_USE_VERTEXAI }}'
           use_gemini_code_assist: '${{ vars.GOOGLE_GENAI_USE_GCA }}'
           settings: |-
@@ -260,11 +260,11 @@ jobs:
 
       - name: 'Apply Labels to Issue'
         if: |-
-          ${{ steps.gemini_issue_analysis.outputs.summary != '' }}
+          ${{ steps.woocode_issue_analysis.outputs.summary != '' }}
         env:
           REPOSITORY: '${{ github.repository }}'
           ISSUE_NUMBER: '${{ github.event.issue.number || github.event.inputs.issue_number }}'
-          LABELS_OUTPUT: '${{ steps.gemini_issue_analysis.outputs.summary }}'
+          LABELS_OUTPUT: '${{ steps.woocode_issue_analysis.outputs.summary }}'
         uses: 'actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea'
         with:
           github-token: '${{ steps.generate_token.outputs.token }}'
@@ -316,7 +316,7 @@ jobs:
 
       - name: 'Post Issue Analysis Failure Comment'
         if: |-
-          ${{ failure() && steps.gemini_issue_analysis.outcome == 'failure' }}
+          ${{ failure() && steps.woocode_issue_analysis.outcome == 'failure' }}
         env:
           ISSUE_NUMBER: '${{ github.event.issue.number || github.event.inputs.issue_number }}'
           RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
