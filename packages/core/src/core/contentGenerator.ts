@@ -20,6 +20,7 @@ import type { Config } from '../config/config.js';
 import type { UserTierId } from '../code_assist/types.js';
 import { LoggingContentGenerator } from './loggingContentGenerator.js';
 import { InstallationManager } from '../utils/installationManager.js';
+import { ProviderContentGenerator } from '../providers/provider-content-generator.js';
 
 /**
  * Interface abstracting the core functionalities for generating content and counting tokens.
@@ -109,10 +110,20 @@ export async function createContentGenerator(
   sessionId?: string,
 ): Promise<ContentGenerator> {
   const version = process.env['CLI_VERSION'] || process.version;
-  const userAgent = `GeminiCLI/${version} (${process.platform}; ${process.arch})`;
+  const userAgent = `WooCode/${version} (${process.platform}; ${process.arch})`;
   const baseHeaders: Record<string, string> = {
     'User-Agent': userAgent,
   };
+
+  // Check if we should use the provider system
+  const useProviderSystem = (gcConfig as any).useProviderSystem ?? true;
+  
+  if (useProviderSystem && config.authType !== AuthType.LOGIN_WITH_GOOGLE) {
+    // Use the new provider system
+    const providerGenerator = new ProviderContentGenerator(gcConfig);
+    await providerGenerator.initialize();
+    return new LoggingContentGenerator(providerGenerator, gcConfig);
+  }
 
   if (
     config.authType === AuthType.LOGIN_WITH_GOOGLE ||
