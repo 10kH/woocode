@@ -21,7 +21,7 @@ const ayuLightColors: ColorsTheme = {
   DiffRemoved: '#FFCCCC',
   Comment: '#ABADB1',
   Gray: '#a6aaaf',
-  GradientColors: ['#399ee6', '#86b300'],
+  GradientColors: ['#D8B2F7', '#C77DFF', '#B388FF'],
 };
 
 export const AyuLight: Theme = new Theme(

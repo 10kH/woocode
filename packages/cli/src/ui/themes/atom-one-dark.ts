@@ -21,7 +21,7 @@ const atomOneDarkColors: ColorsTheme = {
   DiffRemoved: '#562B2F',
   Comment: '#5c6370',
   Gray: '#5c6370',
-  GradientColors: ['#61aeee', '#98c379'],
+  GradientColors: ['#D8B2F7', '#C77DFF', '#B388FF'],
 };
 
 export const AtomOneDark: Theme = new Theme(

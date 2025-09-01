@@ -26,7 +26,7 @@ const shadesOfPurpleColors: ColorsTheme = {
   DiffRemoved: '#572244',
   Comment: '#B362FF', // Comment color (same as AccentPurple)
   Gray: '#726c86', // Gray color
-  GradientColors: ['#4d21fc', '#847ace', '#ff628c'],
+  GradientColors: ['#D8B2F7', '#C77DFF', '#B388FF'],
 };
 
 // Additional colors from CSS that don't fit in the ColorsTheme interface

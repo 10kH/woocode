@@ -21,7 +21,7 @@ const xcodeColors: ColorsTheme = {
   DiffRemoved: '#FEDEDE',
   Comment: '#007400',
   Gray: '#c0c0c0',
-  GradientColors: ['#1c00cf', '#007400'],
+  GradientColors: ['#D8B2F7', '#C77DFF', '#B388FF'],
 };
 
 export const XCode: Theme = new Theme(

@@ -21,7 +21,7 @@ const googleCodeColors: ColorsTheme = {
   DiffRemoved: '#FEDEDE',
   Comment: '#5f6368',
   Gray: lightTheme.Gray,
-  GradientColors: ['#066', '#606'],
+  GradientColors: ['#D8B2F7', '#C77DFF', '#B388FF'],
 };
 
 export const GoogleCode: Theme = new Theme(

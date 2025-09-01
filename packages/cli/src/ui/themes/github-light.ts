@@ -21,7 +21,7 @@ const githubLightColors: ColorsTheme = {
   DiffRemoved: '#FFCCCC',
   Comment: '#998',
   Gray: '#999',
-  GradientColors: ['#458', '#008080'],
+  GradientColors: ['#D8B2F7', '#C77DFF', '#B388FF'],
 };
 
 export const GitHubLight: Theme = new Theme(
