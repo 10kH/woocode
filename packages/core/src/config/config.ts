@@ -24,7 +24,7 @@ import { ShellTool } from '../tools/shell.js';
 import { WriteFileTool } from '../tools/write-file.js';
 import { WebFetchTool } from '../tools/web-fetch.js';
 import { ReadManyFilesTool } from '../tools/read-many-files.js';
-import { MemoryTool, setGeminiMdFilename } from '../tools/memoryTool.js';
+import { MemoryTool, setWoocodeMdFilename } from '../tools/memoryTool.js';
 import { WebSearchTool } from '../tools/web-search.js';
 import { GeminiClient } from '../core/client.js';
 import { FileDiscoveryService } from '../services/fileDiscoveryService.js';
@@ -374,7 +374,7 @@ export class Config {
     this.eventEmitter = params.eventEmitter;
 
     if (params.contextFileName) {
-      setGeminiMdFilename(params.contextFileName);
+      setWoocodeMdFilename(params.contextFileName);
     }
 
     if (this.telemetrySettings.enabled) {
@@ -597,11 +597,11 @@ export class Config {
     this.userMemory = newUserMemory;
   }
 
-  getGeminiMdFileCount(): number {
+  getWoocodeMdFileCount(): number {
     return this.woocodeMdFileCount;
   }
 
-  setGeminiMdFileCount(count: number): void {
+  setWoocodeMdFileCount(count: number): void {
     this.woocodeMdFileCount = count;
   }
 

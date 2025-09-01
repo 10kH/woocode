@@ -111,13 +111,12 @@ export const directoryCommand: SlashCommand = {
                 context.services.settings.merged.context?.discoveryMaxDirs,
               );
             config.setUserMemory(memoryContent);
-            config.setGeminiMdFileCount(fileCount);
-            context.ui.setGeminiMdFileCount(fileCount);
+            config.setWoocodeMdFileCount(fileCount);
           }
           addItem(
             {
               type: MessageType.INFO,
-              text: `Successfully added GEMINI.md files from the following directories if there are:\n- ${added.join('\n- ')}`,
+              text: `Successfully added WOOCODE.md files from the following directories if there are:\n- ${added.join('\n- ')}`,
             },
             Date.now(),
           );

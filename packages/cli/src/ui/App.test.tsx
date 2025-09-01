@@ -53,7 +53,7 @@ interface MockServerConfig {
   mcpServers?: Record<string, MCPServerConfig>; // Use imported MCPServerConfig
   userAgent: string;
   userMemory: string;
-  geminiMdFileCount: number;
+  woocodeMdFileCount: number;
   approvalMode: ApprovalMode;
   vertexai?: boolean;
   showMemoryUsage?: boolean;
@@ -82,15 +82,15 @@ interface MockServerConfig {
   getUserAgent: Mock<() => string>;
   getUserMemory: Mock<() => string>;
   setUserMemory: Mock<(newUserMemory: string) => void>;
-  getGeminiMdFileCount: Mock<() => number>;
-  setGeminiMdFileCount: Mock<(count: number) => void>;
+  getWoocodeMdFileCount: Mock<() => number>;
+  setWoocodeMdFileCount: Mock<(count: number) => void>;
   getApprovalMode: Mock<() => ApprovalMode>;
   setApprovalMode: Mock<(skip: ApprovalMode) => void>;
   getVertexAI: Mock<() => boolean | undefined>;
   getShowMemoryUsage: Mock<() => boolean>;
   getAccessibility: Mock<() => AccessibilitySettings>;
   getProjectRoot: Mock<() => string | undefined>;
-  getAllGeminiMdFilenames: Mock<() => string[]>;
+  getAllWoocodeMdFilenames: Mock<() => string[]>;
   getGeminiClient: Mock<() => GeminiClient | undefined>;
   getUserTier: Mock<() => Promise<string | undefined>>;
   getIdeClient: Mock<() => { getCurrentIde: Mock<() => string | undefined> }>;
@@ -121,7 +121,7 @@ vi.mock('woocode-core', async (importOriginal) => {
         mcpServers: opts.mcpServers,
         userAgent: opts.userAgent || 'test-agent',
         userMemory: opts.userMemory || '',
-        geminiMdFileCount: opts.geminiMdFileCount || 0,
+        woocodeMdFileCount: opts.woocodeMdFileCount || 0,
         approvalMode: opts.approvalMode ?? ApprovalMode.DEFAULT,
         vertexai: opts.vertexai,
         showMemoryUsage: opts.showMemoryUsage ?? false,
@@ -147,8 +147,8 @@ vi.mock('woocode-core', async (importOriginal) => {
         getUserAgent: vi.fn(() => opts.userAgent || 'test-agent'),
         getUserMemory: vi.fn(() => opts.userMemory || ''),
         setUserMemory: vi.fn(),
-        getGeminiMdFileCount: vi.fn(() => opts.geminiMdFileCount || 0),
-        setGeminiMdFileCount: vi.fn(),
+        getWoocodeMdFileCount: vi.fn(() => opts.woocodeMdFileCount || 0),
+        setWoocodeMdFileCount: vi.fn(),
         getApprovalMode: vi.fn(() => opts.approvalMode ?? ApprovalMode.DEFAULT),
         setApprovalMode: vi.fn(),
         getVertexAI: vi.fn(() => opts.vertexai),
@@ -160,7 +160,7 @@ vi.mock('woocode-core', async (importOriginal) => {
           getUserTier: vi.fn(),
         })),
         getCheckpointingEnabled: vi.fn(() => opts.checkpointing ?? true),
-        getAllGeminiMdFilenames: vi.fn(() => ['GEMINI.md']),
+        getAllWoocodeMdFilenames: vi.fn(() => ['WOOCODE.md']),
         setFlashFallbackHandler: vi.fn(),
         getSessionId: vi.fn(() => 'test-session-id'),
         getUserTier: vi.fn().mockResolvedValue(undefined),
@@ -191,7 +191,7 @@ vi.mock('woocode-core', async (importOriginal) => {
     ...actualCore,
     Config: ConfigClassMock,
     MCPServerConfig: actualCore.MCPServerConfig,
-    getAllGeminiMdFilenames: vi.fn(() => ['GEMINI.md']),
+    getAllWoocodeMdFilenames: vi.fn(() => ['WOOCODE.md']),
     ideContext: ideContextMock,
     isGitRepository: vi.fn(),
   };
@@ -254,7 +254,7 @@ vi.mock('../config/config.js', async (importOriginal) => {
   return {
     // @ts-expect-error - this is fine
     ...actual,
-    loadHierarchicalGeminiMemory: vi
+    loadHierarchicalWoocodeMemory: vi
       .fn()
       .mockResolvedValue({ memoryContent: '', fileCount: 0 }),
   };
@@ -340,7 +340,7 @@ describe('App UI', () => {
       targetDir: '/test/dir',
       debugMode: false,
       userMemory: '',
-      geminiMdFileCount: 0,
+      woocodeMdFileCount: 0,
       showMemoryUsage: false,
       sessionId: 'test-session-id',
       cwd: '/tmp',
@@ -636,8 +636,8 @@ describe('App UI', () => {
         ],
       },
     });
-    mockConfig.getGeminiMdFileCount.mockReturnValue(1);
-    mockConfig.getAllGeminiMdFilenames.mockReturnValue(['GEMINI.md']);
+    mockConfig.getWoocodeMdFileCount.mockReturnValue(1);
+    mockConfig.getAllWoocodeMdFilenames.mockReturnValue(['WOOCODE.md']);
 
     const { lastFrame, unmount } = renderWithProviders(
       <App
@@ -649,13 +649,13 @@ describe('App UI', () => {
     currentUnmount = unmount;
     await Promise.resolve();
     expect(lastFrame()).toContain(
-      'Using: 1 open file (ctrl+g to view) | 1 GEMINI.md file',
+      'Using: 1 open file (ctrl+g to view) | 1 WOOCODE.md file',
     );
   });
 
-  it('should display default "GEMINI.md" in footer when contextFileName is not set and count is 1', async () => {
-    mockConfig.getGeminiMdFileCount.mockReturnValue(1);
-    mockConfig.getAllGeminiMdFilenames.mockReturnValue(['GEMINI.md']);
+  it('should display default "WOOCODE.md" in footer when contextFileName is not set and count is 1', async () => {
+    mockConfig.getWoocodeMdFileCount.mockReturnValue(1);
+    mockConfig.getAllWoocodeMdFilenames.mockReturnValue(['WOOCODE.md']);
     // For this test, ensure showMemoryUsage is false or debugMode is false if it relies on that
     mockConfig.getDebugMode.mockReturnValue(false);
     mockConfig.getShowMemoryUsage.mockReturnValue(false);
@@ -669,14 +669,14 @@ describe('App UI', () => {
     );
     currentUnmount = unmount;
     await Promise.resolve(); // Wait for any async updates
-    expect(lastFrame()).toContain('Using: 1 GEMINI.md file');
+    expect(lastFrame()).toContain('Using: 1 WOOCODE.md file');
   });
 
-  it('should display default "GEMINI.md" with plural when contextFileName is not set and count is > 1', async () => {
-    mockConfig.getGeminiMdFileCount.mockReturnValue(2);
-    mockConfig.getAllGeminiMdFilenames.mockReturnValue([
-      'GEMINI.md',
-      'GEMINI.md',
+  it('should display default "WOOCODE.md" with plural when contextFileName is not set and count is > 1', async () => {
+    mockConfig.getWoocodeMdFileCount.mockReturnValue(2);
+    mockConfig.getAllWoocodeMdFilenames.mockReturnValue([
+      'WOOCODE.md',
+      'WOOCODE.md',
     ]);
     mockConfig.getDebugMode.mockReturnValue(false);
     mockConfig.getShowMemoryUsage.mockReturnValue(false);
@@ -690,7 +690,7 @@ describe('App UI', () => {
     );
     currentUnmount = unmount;
     await Promise.resolve();
-    expect(lastFrame()).toContain('Using: 2 GEMINI.md files');
+    expect(lastFrame()).toContain('Using: 2 WOOCODE.md files');
   });
 
   it('should display custom contextFileName in footer when set and count is 1', async () => {
@@ -700,8 +700,8 @@ describe('App UI', () => {
         ui: { theme: 'Default' },
       },
     });
-    mockConfig.getGeminiMdFileCount.mockReturnValue(1);
-    mockConfig.getAllGeminiMdFilenames.mockReturnValue(['AGENTS.md']);
+    mockConfig.getWoocodeMdFileCount.mockReturnValue(1);
+    mockConfig.getAllWoocodeMdFilenames.mockReturnValue(['AGENTS.md']);
     mockConfig.getDebugMode.mockReturnValue(false);
     mockConfig.getShowMemoryUsage.mockReturnValue(false);
 
@@ -724,8 +724,8 @@ describe('App UI', () => {
         ui: { theme: 'Default' },
       },
     });
-    mockConfig.getGeminiMdFileCount.mockReturnValue(2);
-    mockConfig.getAllGeminiMdFilenames.mockReturnValue([
+    mockConfig.getWoocodeMdFileCount.mockReturnValue(2);
+    mockConfig.getAllWoocodeMdFilenames.mockReturnValue([
       'AGENTS.md',
       'CONTEXT.md',
     ]);
@@ -751,8 +751,8 @@ describe('App UI', () => {
         ui: { theme: 'Default' },
       },
     });
-    mockConfig.getGeminiMdFileCount.mockReturnValue(3);
-    mockConfig.getAllGeminiMdFilenames.mockReturnValue([
+    mockConfig.getWoocodeMdFileCount.mockReturnValue(3);
+    mockConfig.getAllWoocodeMdFilenames.mockReturnValue([
       'MY_NOTES.TXT',
       'MY_NOTES.TXT',
       'MY_NOTES.TXT',
@@ -779,8 +779,8 @@ describe('App UI', () => {
         ui: { theme: 'Default' },
       },
     });
-    mockConfig.getGeminiMdFileCount.mockReturnValue(0);
-    mockConfig.getAllGeminiMdFilenames.mockReturnValue([]);
+    mockConfig.getWoocodeMdFileCount.mockReturnValue(0);
+    mockConfig.getAllWoocodeMdFilenames.mockReturnValue([]);
     mockConfig.getDebugMode.mockReturnValue(false);
     mockConfig.getShowMemoryUsage.mockReturnValue(false);
 
@@ -796,11 +796,11 @@ describe('App UI', () => {
     expect(lastFrame()).not.toContain('ANY_FILE.MD');
   });
 
-  it('should display GEMINI.md and MCP server count when both are present', async () => {
-    mockConfig.getGeminiMdFileCount.mockReturnValue(2);
-    mockConfig.getAllGeminiMdFilenames.mockReturnValue([
-      'GEMINI.md',
-      'GEMINI.md',
+  it('should display WOOCODE.md and MCP server count when both are present', async () => {
+    mockConfig.getWoocodeMdFileCount.mockReturnValue(2);
+    mockConfig.getAllWoocodeMdFilenames.mockReturnValue([
+      'WOOCODE.md',
+      'WOOCODE.md',
     ]);
     mockConfig.getMcpServers.mockReturnValue({
       server1: {} as MCPServerConfig,
@@ -820,9 +820,9 @@ describe('App UI', () => {
     expect(lastFrame()).toContain('1 MCP server');
   });
 
-  it('should display only MCP server count when GEMINI.md count is 0', async () => {
-    mockConfig.getGeminiMdFileCount.mockReturnValue(0);
-    mockConfig.getAllGeminiMdFilenames.mockReturnValue([]);
+  it('should display only MCP server count when WOOCODE.md count is 0', async () => {
+    mockConfig.getWoocodeMdFileCount.mockReturnValue(0);
+    mockConfig.getAllWoocodeMdFilenames.mockReturnValue([]);
     mockConfig.getMcpServers.mockReturnValue({
       server1: {} as MCPServerConfig,
       server2: {} as MCPServerConfig,

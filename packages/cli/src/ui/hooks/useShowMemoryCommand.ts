@@ -31,7 +31,7 @@ export function createShowMemoryAction(
     }
 
     const currentMemory = config.getUserMemory();
-    const fileCount = config.getGeminiMdFileCount();
+    const fileCount = config.getWoocodeMdFileCount();
     const contextFileName = settings.merged.context?.fileName;
     const contextFileNames = Array.isArray(contextFileName)
       ? contextFileName

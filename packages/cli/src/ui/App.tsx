@@ -46,7 +46,7 @@ import { FolderTrustDialog } from './components/FolderTrustDialog.js';
 import { ShellConfirmationDialog } from './components/ShellConfirmationDialog.js';
 import { RadioButtonSelect } from './components/shared/RadioButtonSelect.js';
 import { Colors } from './colors.js';
-import { loadHierarchicalGeminiMemory } from '../config/config.js';
+import { loadHierarchicalWoocodeMemory } from '../config/config.js';
 import type { LoadedSettings } from '../config/settings.js';
 // import { ModelSelector, ModelDownloadProgress } from './ModelSelector.js';
 import { ModelDownloadProgress } from './ModelSelector.js';
@@ -63,7 +63,7 @@ import process from 'node:process';
 import type { EditorType, Config, IdeContext } from 'woocode-core';
 import {
   ApprovalMode,
-  getAllGeminiMdFilenames,
+  getAllWoocodeMdFilenames,
   isEditorAvailable,
   getErrorMessage,
   AuthType,
@@ -200,7 +200,7 @@ const App = ({ config, settings, startupWarnings = [], version }: AppProps) => {
     setStaticKey((prev) => prev + 1);
   }, [setStaticKey, stdout]);
 
-  const [geminiMdFileCount, setGeminiMdFileCount] = useState<number>(0);
+  const [woocodeMdFileCount, setWoocodeMdFileCount] = useState<number>(0);
   const [debugMessage, setDebugMessage] = useState<string>('');
   const [themeError, setThemeError] = useState<string | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -369,12 +369,12 @@ const App = ({ config, settings, startupWarnings = [], version }: AppProps) => {
     addItem(
       {
         type: MessageType.INFO,
-        text: 'Refreshing hierarchical memory (GEMINI.md or other context files)...',
+        text: 'Refreshing hierarchical memory (WOOCODE.md or other context files)...',
       },
       Date.now(),
     );
     try {
-      const { memoryContent, fileCount } = await loadHierarchicalGeminiMemory(
+      const { memoryContent, fileCount } = await loadHierarchicalWoocodeMemory(
         process.cwd(),
         settings.merged.context?.loadMemoryFromIncludeDirectories
           ? config.getWorkspaceContext().getDirectories()
@@ -389,8 +389,8 @@ const App = ({ config, settings, startupWarnings = [], version }: AppProps) => {
       );
 
       config.setUserMemory(memoryContent);
-      config.setGeminiMdFileCount(fileCount);
-      setGeminiMdFileCount(fileCount);
+      config.setWoocodeMdFileCount(fileCount);
+      setWoocodeMdFileCount(fileCount);
 
       addItem(
         {
@@ -627,7 +627,7 @@ const App = ({ config, settings, startupWarnings = [], version }: AppProps) => {
     openSettingsDialog,
     toggleVimEnabled,
     setIsProcessing,
-    setGeminiMdFileCount,
+    setWoocodeMdFileCount,
   );
 
   const buffer = useTextBuffer({
@@ -858,9 +858,9 @@ const App = ({ config, settings, startupWarnings = [], version }: AppProps) => {
 
   useEffect(() => {
     if (config) {
-      setGeminiMdFileCount(config.getGeminiMdFileCount());
+      setWoocodeMdFileCount(config.getWoocodeMdFileCount());
     }
-  }, [config, config.getGeminiMdFileCount]);
+  }, [config, config.getWoocodeMdFileCount]);
 
   const logger = useLogger(config.storage);
 
@@ -938,7 +938,7 @@ const App = ({ config, settings, startupWarnings = [], version }: AppProps) => {
     if (fromSettings) {
       return Array.isArray(fromSettings) ? fromSettings : [fromSettings];
     }
-    return getAllGeminiMdFilenames();
+    return getAllWoocodeMdFilenames();
   }, [settings.merged.context?.fileName]);
 
   const initialPrompt = useMemo(() => config.getQuestion(), [config]);
@@ -1299,7 +1299,7 @@ const App = ({ config, settings, startupWarnings = [], version }: AppProps) => {
                   ) : (
                     <ContextSummaryDisplay
                       ideContext={ideContextState}
-                      geminiMdFileCount={geminiMdFileCount}
+                      woocodeMdFileCount={woocodeMdFileCount}
                       contextFileNames={contextFileNames}
                       mcpServers={config.getMcpServers()}
                       blockedMcpServers={config.getBlockedMcpServers()}

@@ -9,7 +9,7 @@ import * as fsSync from 'node:fs';
 import * as path from 'node:path';
 import { homedir } from 'node:os';
 import { bfsFileSearch } from './bfsFileSearch.js';
-import { getAllGeminiMdFilenames } from '../tools/memoryTool.js';
+import { getAllWoocodeMdFilenames } from '../tools/memoryTool.js';
 import type { FileDiscoveryService } from '../services/fileDiscoveryService.js';
 import { processImports } from './memoryImportProcessor.js';
 import type { FileFilteringOptions } from '../config/config.js';
@@ -143,14 +143,14 @@ async function getGeminiMdFilePathsInternalForEachDir(
   maxDirs: number,
 ): Promise<string[]> {
   const allPaths = new Set<string>();
-  const geminiMdFilenames = getAllGeminiMdFilenames();
+  const woocodeMdFilenames = getAllWoocodeMdFilenames();
 
-  for (const geminiMdFilename of geminiMdFilenames) {
+  for (const woocodeMdFilename of woocodeMdFilenames) {
     const resolvedHome = path.resolve(userHomePath);
     const globalMemoryPath = path.join(
       resolvedHome,
       WOOCODE_DIR,
-      geminiMdFilename,
+      woocodeMdFilename,
     );
 
     // This part that finds the global file always runs.
@@ -159,7 +159,7 @@ async function getGeminiMdFilePathsInternalForEachDir(
       allPaths.add(globalMemoryPath);
       if (debugMode)
         logger.debug(
-          `Found readable global ${geminiMdFilename}: ${globalMemoryPath}`,
+          `Found readable global ${woocodeMdFilename}: ${globalMemoryPath}`,
         );
     } catch {
       // It's okay if it's not found.
@@ -171,7 +171,7 @@ async function getGeminiMdFilePathsInternalForEachDir(
       const resolvedCwd = path.resolve(dir);
       if (debugMode)
         logger.debug(
-          `Searching for ${geminiMdFilename} starting from CWD: ${resolvedCwd}`,
+          `Searching for ${woocodeMdFilename} starting from CWD: ${resolvedCwd}`,
         );
 
       const projectRoot = await findProjectRoot(resolvedCwd);
@@ -189,7 +189,7 @@ async function getGeminiMdFilePathsInternalForEachDir(
           break;
         }
 
-        const potentialPath = path.join(currentDir, geminiMdFilename);
+        const potentialPath = path.join(currentDir, woocodeMdFilename);
         try {
           await fs.access(potentialPath, fsSync.constants.R_OK);
           if (potentialPath !== globalMemoryPath) {
@@ -213,7 +213,7 @@ async function getGeminiMdFilePathsInternalForEachDir(
       };
 
       const downwardPaths = await bfsFileSearch(resolvedCwd, {
-        fileName: geminiMdFilename,
+        fileName: woocodeMdFilename,
         maxDirs,
         debug: debugMode,
         fileService,
@@ -235,7 +235,7 @@ async function getGeminiMdFilePathsInternalForEachDir(
 
   if (debugMode)
     logger.debug(
-      `Final ordered ${getAllGeminiMdFilenames()} paths to read: ${JSON.stringify(
+      `Final ordered ${getAllWoocodeMdFilenames()} paths to read: ${JSON.stringify(
         finalPaths,
       )}`,
     );
@@ -280,7 +280,7 @@ async function readGeminiMdFiles(
             const message =
               error instanceof Error ? error.message : String(error);
             logger.warn(
-              `Warning: Could not read ${getAllGeminiMdFilenames()} file at ${filePath}. Error: ${message}`,
+              `Warning: Could not read ${getAllWoocodeMdFilenames()} file at ${filePath}. Error: ${message}`,
             );
           }
           if (debugMode) logger.debug(`Failed to read: ${filePath}`);

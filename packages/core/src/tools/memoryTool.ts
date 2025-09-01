@@ -65,10 +65,10 @@ export const DEFAULT_CONTEXT_FILENAME = 'WOOCODE.md';
 export const MEMORY_SECTION_HEADER = '## Gemini Added Memories';
 
 // This variable will hold the currently configured filename for WOOCODE.md context files.
-// It defaults to DEFAULT_CONTEXT_FILENAME but can be overridden by setGeminiMdFilename.
+// It defaults to DEFAULT_CONTEXT_FILENAME but can be overridden by setWoocodeMdFilename.
 let currentGeminiMdFilename: string | string[] = DEFAULT_CONTEXT_FILENAME;
 
-export function setGeminiMdFilename(newFilename: string | string[]): void {
+export function setWoocodeMdFilename(newFilename: string | string[]): void {
   if (Array.isArray(newFilename)) {
     if (newFilename.length > 0) {
       currentGeminiMdFilename = newFilename.map((name) => name.trim());
@@ -78,14 +78,14 @@ export function setGeminiMdFilename(newFilename: string | string[]): void {
   }
 }
 
-export function getCurrentGeminiMdFilename(): string {
+export function getCurrentWoocodeMdFilename(): string {
   if (Array.isArray(currentGeminiMdFilename)) {
     return currentGeminiMdFilename[0];
   }
   return currentGeminiMdFilename;
 }
 
-export function getAllGeminiMdFilenames(): string[] {
+export function getAllWoocodeMdFilenames(): string[] {
   if (Array.isArray(currentGeminiMdFilename)) {
     return currentGeminiMdFilename;
   }
@@ -99,7 +99,7 @@ interface SaveMemoryParams {
 }
 
 function getGlobalMemoryFilePath(): string {
-  return path.join(Storage.getGlobalGeminiDir(), getCurrentGeminiMdFilename());
+  return path.join(Storage.getGlobalGeminiDir(), getCurrentWoocodeMdFilename());
 }
 
 /**

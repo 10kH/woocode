@@ -23,7 +23,7 @@ export const memoryCommand: SlashCommand = {
       kind: CommandKind.BUILT_IN,
       action: async (context) => {
         const memoryContent = context.services.config?.getUserMemory() || '';
-        const fileCount = context.services.config?.getGeminiMdFileCount() || 0;
+        const fileCount = context.services.config?.getWoocodeMdFileCount() || 0;
 
         const messageContent =
           memoryContent.length > 0
@@ -99,7 +99,7 @@ export const memoryCommand: SlashCommand = {
                 context.services.settings.merged.context?.discoveryMaxDirs,
               );
             config.setUserMemory(memoryContent);
-            config.setGeminiMdFileCount(fileCount);
+            config.setWoocodeMdFileCount(fileCount);
 
             const successMessage =
               memoryContent.length > 0
