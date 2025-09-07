@@ -31,6 +31,20 @@ export class ProviderAdapter {
   }
 
   /**
+   * Get the current active provider
+   */
+  getActiveProvider(): LLMProvider | undefined {
+    return this.currentProvider;
+  }
+  
+  /**
+   * Get the current model
+   */
+  getCurrentModel(): string | undefined {
+    return this.currentModel;
+  }
+
+  /**
    * Initialize the provider system
    */
   async initialize(providerName?: string): Promise<void> {
@@ -44,11 +58,42 @@ export class ProviderAdapter {
     
     this.currentProvider = this.providerManager.getActiveProvider();
     
-    // If HuggingFace, recommend model based on GPU
-    if (this.currentProvider.name === 'HuggingFace') {
+    // Select a default model based on provider
+    if (this.currentProvider.name === 'QwenLocal') {
+      // For local Qwen server, use the recommended model
+      const qwenProvider = this.currentProvider as any;
+      this.currentModel = await qwenProvider.recommendModel();
+      console.log(`Selected local Qwen model: ${this.currentModel}`);
+    } else if (this.currentProvider.name === 'LlamaCpp') {
+      // For llama.cpp, use GPU-appropriate GGUF model
+      const llamaProvider = this.currentProvider as any;
+      this.currentModel = await llamaProvider.recommendModel();
+      console.log(`Selected GGUF model: ${this.currentModel}`);
+    } else if (this.currentProvider.name === 'HuggingFaceAPI') {
+      // For HuggingFace API, use large models
+      const hfApiProvider = this.currentProvider as any;
+      this.currentModel = await hfApiProvider.recommendModel();
+      console.log(`Selected HF API model: ${this.currentModel}`);
+    } else if (this.currentProvider.name === 'HuggingFace' || 
+               this.currentProvider.name === 'HuggingFaceJS') {
+      // For HuggingFace providers, recommend model based on availability
       const hfProvider = this.currentProvider as any;
-      this.currentModel = await hfProvider.recommendModel();
+      if (hfProvider.recommendModel) {
+        this.currentModel = await hfProvider.recommendModel();
+      } else {
+        // Use Qwen1.5 Chat as fallback
+        this.currentModel = 'Xenova/Qwen1.5-0.5B-Chat';
+      }
       console.log(`Selected model: ${this.currentModel}`);
+    } else if (this.currentProvider.name === 'Ollama') {
+      // Default Ollama model
+      this.currentModel = 'qwen2.5-coder';
+    } else {
+      // For API providers, use their default models
+      const models = await this.currentProvider.listModels();
+      if (models.length > 0) {
+        this.currentModel = models[0].id;
+      }
     }
   }
 

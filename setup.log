@@ -1,0 +1,24 @@
+🚀 WooCode Local Inference Setup
+=================================
+
+Detected OS: linux
+
+What would you like to install?
+
+1) llama.cpp (Recommended - Fast C++ inference)
+2) transformers.js (Browser/Node.js inference)
+3) Both
+4) Download starter model
+5) Full setup (install everything)
+0) Exit
+
+Detecting GPU...
+✓ NVIDIA GPU detected
+name, memory.total [MiB]
+Quadro RTX 8000, 49152 MiB
+Quadro RTX 8000, 49152 MiB
+
+Installing llama.cpp...
+Already up to date.
+Building with CUDA support...
+./scripts/setup-local-inference.sh: line 80: cmake: command not found

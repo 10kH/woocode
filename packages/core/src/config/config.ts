@@ -26,7 +26,7 @@ import { WebFetchTool } from '../tools/web-fetch.js';
 import { ReadManyFilesTool } from '../tools/read-many-files.js';
 import { MemoryTool, setWoocodeMdFilename } from '../tools/memoryTool.js';
 import { WebSearchTool } from '../tools/web-search.js';
-import { GeminiClient } from '../core/client.js';
+import { UnifiedClient } from '../providers/unified-client.js';
 import { FileDiscoveryService } from '../services/fileDiscoveryService.js';
 import { ProviderAdapter } from '../providers/adapter.js';
 import { GitService } from '../services/gitService.js';
@@ -243,7 +243,7 @@ export class Config {
   private readonly accessibility: AccessibilitySettings;
   private readonly telemetrySettings: TelemetrySettings;
   private readonly usageStatisticsEnabled: boolean;
-  private woocodeClient!: GeminiClient;
+  private woocodeClient!: UnifiedClient;
   private providerAdapter?: ProviderAdapter;
   private readonly fileFiltering: {
     respectGitIgnore: boolean;
@@ -428,6 +428,26 @@ export class Config {
   }
 
   async refreshAuth(authMethod: AuthType) {
+    // Check if we should use provider system instead
+    const useProviderSystem = this.parameters?.useProviderSystem || 
+                             process.env['WOOCODE_PROVIDER'] || 
+                             authMethod === AuthType.USE_GEMINI && process.env['WOOCODE_API_KEY'] === 'dummy';
+    
+    if (useProviderSystem) {
+      // For provider system, create UnifiedClient without traditional auth
+      if (!this.providerAdapter) {
+        await this.initializeProviderAdapter();
+      }
+      
+      // Create UnifiedClient for provider mode
+      if (!this.woocodeClient) {
+        this.woocodeClient = new UnifiedClient(this);
+        // Initialize with provider mode (no content generator config needed)
+        await this.woocodeClient.initialize();
+      }
+      return;
+    }
+    
     // Save the current conversation history before creating a new client
     let existingHistory: Content[] = [];
     if (this.woocodeClient && this.woocodeClient.isInitialized()) {
@@ -441,7 +461,7 @@ export class Config {
     );
 
     // Create and initialize new client in local variable first
-    const newGeminiClient = new GeminiClient(this);
+    const newGeminiClient = new UnifiedClient(this);
     await newGeminiClient.initialize(newContentGeneratorConfig);
 
     // Vertex and Genai have incompatible encryption and sending history with
@@ -650,7 +670,7 @@ export class Config {
     return this.telemetrySettings.outfile;
   }
 
-  getGeminiClient(): GeminiClient {
+  getGeminiClient(): UnifiedClient {
     return this.woocodeClient;
   }
   

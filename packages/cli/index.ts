@@ -11,7 +11,7 @@ import { main } from './src/gemini.js';
 import { FatalError } from 'woocode-core';
 
 // --- Global Entry Point ---
-main().catch((error) => {
+main().catch((error: unknown) => {
   if (error instanceof FatalError) {
     let errorMessage = error.message;
     if (!process.env['NO_COLOR']) {

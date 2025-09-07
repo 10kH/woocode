@@ -6,7 +6,10 @@
 
 import type { LLMProvider, ProviderConfig, ModelInfo } from './types.js';
 import { OllamaProvider } from './ollama.js';
-import { HuggingFaceProvider } from './huggingface.js';
+import { HuggingFaceJSDynamicProvider } from './huggingface-js-dynamic.js';
+import { HuggingFaceAPIProvider } from './huggingface-api.js';
+import { QwenLocalProvider } from './qwen-local.js';
+import { LlamaCppProvider } from './llamacpp.js';
 import { OpenAIProvider } from './openai.js';
 import { AnthropicProvider } from './anthropic.js';
 import { GeminiProvider } from './gemini.js';
@@ -22,7 +25,10 @@ export class ProviderManager {
   constructor(settings?: any) {
     
     // Initialize local providers
-    this.registerProvider('huggingface', new HuggingFaceProvider());
+    this.registerProvider('qwen-local', new QwenLocalProvider());  // Qwen3-Coder local server
+    this.registerProvider('huggingface', new HuggingFaceJSDynamicProvider());
+    this.registerProvider('huggingface-api', new HuggingFaceAPIProvider());
+    this.registerProvider('llamacpp', new LlamaCppProvider());
     this.registerProvider('ollama', new OllamaProvider());
     
     // Initialize API providers with settings (will check for API keys during initialization)
@@ -97,8 +103,8 @@ export class ProviderManager {
    * Auto-detect and set the best available provider
    */
   async autoDetectProvider(): Promise<string> {
-    // Priority order: Local providers first for privacy, then API providers
-    const priorityOrder = ['huggingface', 'ollama', 'gemini', 'anthropic', 'openai'];
+    // Priority order: HF API for large models if token available, then local providers
+    const priorityOrder = ['huggingface-api', 'llamacpp', 'huggingface', 'ollama', 'gemini', 'anthropic', 'openai'];
 
     for (const id of priorityOrder) {
       const provider = this.providers.get(id);
@@ -149,7 +155,11 @@ export class ProviderManager {
 
     switch (id) {
       case 'huggingface':
-        provider = new HuggingFaceProvider(config);
+        // Use dynamic loading version
+        provider = new HuggingFaceJSDynamicProvider(config);
+        break;
+      case 'llamacpp':
+        provider = new LlamaCppProvider(config);
         break;
       case 'ollama':
         provider = new OllamaProvider(config);
@@ -177,14 +187,19 @@ export class ProviderManager {
   getProviderSuggestions(): { id: string; description: string; setup: string }[] {
     return [
       {
+        id: 'llamacpp',
+        description: 'Llama.cpp with GGUF models (Best quality & performance)',
+        setup: '1. Install llama.cpp: git clone https://github.com/ggerganov/llama.cpp && cd llama.cpp && make\n2. WooCode will auto-download GGUF models (Qwen2.5-Coder, CodeLlama)\n3. GPU acceleration supported (CUDA/ROCm)',
+      },
+      {
         id: 'huggingface',
-        description: 'Hugging Face models with local inference (Best quality, recommended)',
-        setup: '1. Install llama.cpp: git clone https://github.com/ggerganov/llama.cpp && cd llama.cpp && make\n2. Or install transformers: pip install transformers torch\n3. WooCode will auto-download models on first use',
+        description: 'Hugging Face models with transformers.js (Easy setup, limited models)',
+        setup: '1. No installation required\n2. Models download automatically\n3. Runs in JavaScript/WASM (slower than llama.cpp)',
       },
       {
         id: 'ollama',
-        description: 'Local LLM using Ollama (Easy setup)',
-        setup: '1. Install Ollama: curl -fsSL https://ollama.com/install.sh | sh\n2. Pull a model: ollama pull llama3\n3. Start Ollama: ollama serve',
+        description: 'Local LLM using Ollama (Easy management)',
+        setup: '1. Install Ollama: curl -fsSL https://ollama.com/install.sh | sh\n2. Pull a model: ollama pull qwen2.5-coder\n3. Start Ollama: ollama serve',
       },
       {
         id: 'gemini',

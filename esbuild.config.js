@@ -29,6 +29,11 @@ esbuild
       '@lydell/node-pty-linux-x64',
       '@lydell/node-pty-win32-arm64',
       '@lydell/node-pty-win32-x64',
+      // External transformers.js and its dependencies
+      '@xenova/transformers',
+      'sharp',
+      'onnxruntime-node',
+      'onnxruntime-web',
     ],
     alias: {
       'is-in-ci': path.resolve(

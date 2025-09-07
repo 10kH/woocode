@@ -10,6 +10,13 @@ import { USER_SETTINGS_PATH } from './config/settings.js';
 import { validateAuthMethod } from './config/auth.js';
 
 function getAuthTypeFromEnv(): AuthType | undefined {
+  // Check for local provider first
+  if (process.env['WOOCODE_PROVIDER'] || process.env['WOOCODE_USE_LOCAL'] === 'true') {
+    // Return a dummy auth type for local mode
+    // The provider system will handle actual authentication
+    return AuthType.USE_GEMINI; // with dummy key
+  }
+  
   if (process.env['GOOGLE_GENAI_USE_GCA'] === 'true') {
     return AuthType.LOGIN_WITH_GOOGLE;
   }
@@ -29,14 +36,18 @@ export async function validateNonInteractiveAuth(
 ) {
   const effectiveAuthType = configuredAuthType || getAuthTypeFromEnv();
 
-  if (!effectiveAuthType) {
+  // Skip auth check if using provider system
+  const useProviderSystem = process.env['WOOCODE_PROVIDER'] || 
+                           process.env['WOOCODE_USE_LOCAL'] === 'true';
+  
+  if (!effectiveAuthType && !useProviderSystem) {
     console.error(
       `Please set an Auth method in your ${USER_SETTINGS_PATH} or specify one of the following environment variables before running: WOOCODE_API_KEY, GOOGLE_GENAI_USE_VERTEXAI, GOOGLE_GENAI_USE_GCA`,
     );
     process.exit(1);
   }
 
-  if (!useExternalAuth) {
+  if (!useExternalAuth && effectiveAuthType) {
     const err = validateAuthMethod(effectiveAuthType);
     if (err != null) {
       console.error(err);
@@ -44,6 +55,12 @@ export async function validateNonInteractiveAuth(
     }
   }
 
-  await nonInteractiveConfig.refreshAuth(effectiveAuthType);
+  // Only refresh auth if we have a valid auth type
+  if (effectiveAuthType) {
+    await nonInteractiveConfig.refreshAuth(effectiveAuthType);
+  } else if (useProviderSystem) {
+    // For provider system, use a dummy auth type or skip auth
+    await nonInteractiveConfig.refreshAuth(AuthType.USE_GEMINI);
+  }
   return nonInteractiveConfig;
 }
